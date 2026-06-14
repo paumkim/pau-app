@@ -1,6 +1,5 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import '../../theme/app_theme.dart';
 import '../../services/bible_loader.dart';
 
@@ -12,12 +11,10 @@ class BibleReaderScreen extends StatefulWidget {
 }
 
 class _BibleReaderScreenState extends State<BibleReaderScreen> {
-  // Books + chapters computed from the loaded Bible
   final List<_BookInfo> _books = [];
   late int _currentBook;
   late int _currentChapter;
   final _scrollController = ScrollController();
-  bool _showControls = false;
 
   static final List<int> _chapterCounts = [
     50, 40, 27, 36, 34, 24, 21, 4, 31, 24,
@@ -47,8 +44,6 @@ class _BibleReaderScreenState extends State<BibleReaderScreen> {
 
   @override
   void dispose() {
-    // Restore immersive mode when leaving
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
     _scrollController.dispose();
     super.dispose();
   }
@@ -58,7 +53,6 @@ class _BibleReaderScreenState extends State<BibleReaderScreen> {
     final chCount = book.chapters;
     final totalVerses = book.verseCount;
     final avgPerChapter = totalVerses ~/ chCount;
-    // Safe bounds — chapter 1 gets the first chunk, last chapter gets the remainder
     final start = ((_currentChapter - 1) * avgPerChapter).clamp(0, totalVerses);
     final end = _currentChapter == chCount
         ? totalVerses
@@ -74,9 +68,24 @@ class _BibleReaderScreenState extends State<BibleReaderScreen> {
     setState(() {
       _currentBook = bookIdx;
       _currentChapter = chapter.clamp(1, _books[bookIdx].chapters);
-      _showControls = false;
     });
     _scrollController.jumpTo(0);
+  }
+
+  void _prevChapter() {
+    if (_currentChapter > 1) {
+      _openChapter(_currentBook, _currentChapter - 1);
+    } else if (_currentBook > 0) {
+      _openChapter(_currentBook - 1, _books[_currentBook - 1].chapters);
+    }
+  }
+
+  void _nextChapter() {
+    if (_currentChapter < _books[_currentBook].chapters) {
+      _openChapter(_currentBook, _currentChapter + 1);
+    } else if (_currentBook < _books.length - 1) {
+      _openChapter(_currentBook + 1, 1);
+    }
   }
 
   void _showPicker(BuildContext context) {
@@ -119,204 +128,140 @@ class _BibleReaderScreenState extends State<BibleReaderScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final bgColor = isDark ? const Color(0xFF1A1A2E) : const Color(0xFFFDF8F0);
     final textColor = isDark ? const Color(0xFFE4E6EB) : const Color(0xFF2D1B00);
-    final verseNumColor = isDark ? AppTheme.bubbleUserDark : AppTheme.primary;
+    final accentColor = isDark ? AppTheme.bubbleUserDark : AppTheme.primary;
+    final hasPrev = _currentChapter > 1 || _currentBook > 0;
+    final hasNext = _currentChapter < _books[_currentBook].chapters || _currentBook < _books.length - 1;
+
     return Scaffold(
       backgroundColor: bgColor,
-      body: Stack(
-        children: [
-          // Main scrollable content
-          Positioned.fill(
-            child: GestureDetector(
-              behavior: HitTestBehavior.translucent,
-              onTap: () {
-                setState(() => _showControls = !_showControls);
-                // Toggle system UI to match reading state
-                if (_showControls) {
-                  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-                } else {
-                  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-                }
-              },
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
-                child: Column(
+      body: SafeArea(
+        child: GestureDetector(
+          onHorizontalDragEnd: (d) {
+            if (d.primaryVelocity! < -80 && hasNext) {
+              _nextChapter();
+            } else if (d.primaryVelocity! > 80 && hasPrev) {
+              _prevChapter();
+            }
+          },
+          child: Column(
+            children: [
+              // Header — back, chapter title, position
+              Padding(
+                padding: const EdgeInsets.fromLTRB(4, 8, 12, 4),
+                child: Row(
                   children: [
-                    // Chapter header
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 16, top: 8),
-                      child: GestureDetector(
-                        onTap: () => _showPicker(context),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text('$bookName $_currentChapter',
-                              style: TextStyle(
-                                fontSize: 22,
-                                fontWeight: FontWeight.w600,
-                                color: verseNumColor,
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            Icon(Icons.arrow_drop_down,
-                              color: verseNumColor.withAlpha(120), size: 22),
-                          ],
-                        ),
-                      ),
-                    ),
-                    // Verse list
-                    Expanded(
-                      child: verses.isEmpty
-                          ? Center(
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(Icons.auto_stories,
-                                    size: 32, color: textColor.withAlpha(60)),
-                                  const SizedBox(height: 12),
-                                  Text('Chapter $_currentChapter',
-                                    style: TextStyle(
-                                      color: textColor.withAlpha(100),
-                                      fontSize: 16, fontWeight: FontWeight.w600)),
-                                  const SizedBox(height: 4),
-                                  Text('Not yet available',
-                                    style: TextStyle(
-                                      color: textColor.withAlpha(60), fontSize: 13)),
-                                ],
-                              ),
-                            )
-                          : ListView.builder(
-                              controller: _scrollController,
-                              padding: const EdgeInsets.only(bottom: 40),
-                              itemCount: verses.length,
-                              itemBuilder: (_, i) {
-                                return Padding(
-                                  padding: const EdgeInsets.only(bottom: 8),
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      SizedBox(
-                                        width: 32,
-                                        child: Text(
-                                          '${i + 1}',
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w600,
-                                            color: verseNumColor.withAlpha(150),
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Text(
-                                          verses[i],
-                                          style: TextStyle(
-                                            fontSize: 17,
-                                            height: 1.7,
-                                            color: textColor,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
-                            ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-
-          // Top bar overlay
-          if (_showControls)
-            SafeArea(
-              child: Container(
-                padding: const EdgeInsets.fromLTRB(4, 4, 4, 0),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [Colors.black.withAlpha(180), Colors.transparent],
-                ),
-              ),
-              child: Row(
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.arrow_back, color: Colors.white),
-                    onPressed: () => Navigator.pop(context)),
-                  Expanded(
-                    child: GestureDetector(
+                    IconButton(
+                      icon: Icon(Icons.arrow_back,
+                        color: accentColor.withAlpha(150), size: 20),
+                      onPressed: () => Navigator.pop(context)),
+                    const Spacer(),
+                    GestureDetector(
                       onTap: () => _showPicker(context),
                       child: Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           Text('$bookName $_currentChapter',
-                            style: const TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.w600, fontSize: 16),
-                            overflow: TextOverflow.ellipsis),
-                          const Icon(Icons.arrow_drop_down,
-                            color: Colors.white60, size: 20),
+                            style: TextStyle(
+                              fontSize: 17, fontWeight: FontWeight.w600,
+                              color: accentColor)),
+                          const SizedBox(width: 4),
+                          Icon(Icons.arrow_drop_down,
+                            color: accentColor.withAlpha(120), size: 18),
                         ],
                       ),
                     ),
-                  ),
-                  Text('${verses.length} verses',
-                    style: const TextStyle(color: Colors.white60, fontSize: 12)),
-                  const SizedBox(width: 8),
-                ],
-              ),
-            ),
-            ),
-
-          // Bottom bar — prev/next chapter
-          if (_showControls)
-            Positioned(
-              bottom: 0, left: 0, right: 0,
-              child: Container(
-                padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).padding.bottom + 8, top: 16),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.bottomCenter,
-                    end: Alignment.topCenter,
-                    colors: [Colors.black.withAlpha(200), Colors.transparent],
-                  ),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    TextButton.icon(
-                      icon: const Icon(Icons.chevron_left, color: Colors.white70, size: 22),
-                      label: const Text('Prev',
-                        style: TextStyle(color: Colors.white70, fontSize: 14)),
-                      onPressed: _currentChapter > 1
-                          ? () => _openChapter(_currentBook, _currentChapter - 1)
-                          : _currentBook > 0
-                              ? () => _openChapter(_currentBook - 1, _books[_currentBook - 1].chapters)
-                              : null,
-                    ),
-                    Text('$_currentChapter / ${_books[_currentBook].chapters}',
-                      style: const TextStyle(color: Colors.white54, fontSize: 13)),
-                    TextButton.icon(
-                      icon: const Icon(Icons.chevron_right, color: Colors.white70, size: 22),
-                      label: const Text('Next',
-                        style: TextStyle(color: Colors.white70, fontSize: 14)),
-                      onPressed: _currentChapter < _books[_currentBook].chapters
-                          ? () => _openChapter(_currentBook, _currentChapter + 1)
-                          : _currentBook < _books.length - 1
-                              ? () => _openChapter(_currentBook + 1, 1)
-                              : null,
-                    ),
+                    const Spacer(),
+                    Text('${_currentChapter}/${_books[_currentBook].chapters}',
+                      style: TextStyle(
+                        fontSize: 11, color: accentColor.withAlpha(80))),
                   ],
                 ),
               ),
-            ),
-        ],
+
+              // Verse list
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: verses.isEmpty
+                    ? Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.auto_stories,
+                              size: 32, color: textColor.withAlpha(60)),
+                            const SizedBox(height: 12),
+                            Text('Chapter $_currentChapter',
+                              style: TextStyle(
+                                color: textColor.withAlpha(100),
+                                fontSize: 16, fontWeight: FontWeight.w600)),
+                            const SizedBox(height: 4),
+                            Text('Not yet available',
+                              style: TextStyle(
+                                color: textColor.withAlpha(60), fontSize: 13)),
+                          ],
+                        ),
+                      )
+                    : ListView.builder(
+                        controller: _scrollController,
+                        padding: const EdgeInsets.only(bottom: 40),
+                        itemCount: verses.length,
+                        itemBuilder: (_, i) {
+                          final verseNum = i + 1;
+                          final isChapterStart = verseNum == 1;
+                          return Padding(
+                            padding: EdgeInsets.only(
+                              bottom: 6,
+                              top: isChapterStart ? 0 : 0,
+                            ),
+                            child: Text.rich(
+                              TextSpan(
+                                children: [
+                                  WidgetSpan(
+                                    alignment: PlaceholderAlignment.middle,
+                                    child: Container(
+                                      margin: const EdgeInsets.only(right: 4),
+                                      child: Text(
+                                        '$verseNum',
+                                        style: TextStyle(
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.w700,
+                                          color: accentColor.withAlpha(180),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: verses[i],
+                                    style: TextStyle(
+                                      fontSize: 17,
+                                      height: 1.8,
+                                      color: textColor,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+              ),
+              ),
+
+              // Bottom hint
+              if (verses.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 6),
+                  child: Text('← swipe  ·  tap book name to pick  ·  swipe →',
+                    style: TextStyle(fontSize: 10, color: textColor.withAlpha(40))),
+                ),
+            ],
+          ),
+        ),
       ),
     );
   }
 }
 
-/// Bottom sheet: book list on left, chapter grid on right.
 class _BookChapterPicker extends StatefulWidget {
   final List<_BookInfo> books;
   final int currentBook;
@@ -366,7 +311,6 @@ class _BookChapterPickerState extends State<_BookChapterPicker> {
       ),
       child: Column(
         children: [
-          // Handle bar
           Container(
             margin: const EdgeInsets.only(top: 8),
             width: 40, height: 4,
@@ -376,7 +320,6 @@ class _BookChapterPickerState extends State<_BookChapterPicker> {
             ),
           ),
           const SizedBox(height: 12),
-          // Search field
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: TextField(
@@ -407,7 +350,6 @@ class _BookChapterPickerState extends State<_BookChapterPicker> {
           Expanded(
             child: Row(
               children: [
-                // Book list
                 SizedBox(
                   width: 140,
                   child: ListView.builder(
@@ -443,7 +385,6 @@ class _BookChapterPickerState extends State<_BookChapterPicker> {
                     },
                   ),
                 ),
-                // Chapter grid
                 Expanded(
                   child: GridView.builder(
                     padding: const EdgeInsets.all(8),
