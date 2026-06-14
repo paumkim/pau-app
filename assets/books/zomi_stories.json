@@ -1,0 +1,26 @@
+{
+  "id": "zomi_stories",
+  "title": "Zomi Stories",
+  "author": "Pau Team",
+  "subtitle": "by Pau Team",
+  "sections": [
+    {
+      "title": "Introduction",
+      "chapters": [
+        {
+          "number": 1,
+          "content": "This is a test Zomi book.\nPau in Zomi means voice."
+        }
+      ]
+    },
+    {
+      "title": "Chapter 1",
+      "chapters": [
+        {
+          "number": 1,
+          "content": "Ka lawm, nang kiang ah ka pai.\nPau in Zomi a cih pen aw a cihna hi."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+[
+  {
+    "id": "tedim_bible",
+    "name": "Tedim Bible",
+    "description": "Read the Tedim Bible — 30,715 verses",
+    "icon": "menu_book",
+    "color": "#8B4513",
+    "type": "offline",
+    "defaultEnabled": true
+  },
+  {
+    "id": "zomi_lyrics",
+    "name": "Zomi Lyrics",
+    "description": "Browse worship songs and lyrics in Zomi",
+    "icon": "music_note",
+    "color": "#6A0DAD",
+    "type": "online",
+    "defaultEnabled": false
+  },
+  {
+    "id": "daily_verse",
+    "name": "Daily Verse",
+    "description": "A new Tedim Bible verse every day",
+    "icon": "wb_sunny",
+    "color": "#D4A843",
+    "type": "offline",
+    "defaultEnabled": false
+  }
+]
