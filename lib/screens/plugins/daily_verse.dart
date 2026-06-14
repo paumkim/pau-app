@@ -18,12 +18,12 @@ class _DailyVerseScreenState extends State<DailyVerseScreen>
   bool _hasLanded = false;
   int _currentGradient = 0;
   int _rollCount = 0;
-  final List<int> _shuffledOrder = [];
-  int _shuffleIndex = 0;
   final _random = Random();
 
-  // All verse references from the installed Bible
-  late List<_VerseRef> _allVerses;
+  // Verse data
+  List<_VerseRef> _allVerses = [];
+  final List<_VerseRef> _shuffledDeck = [];
+  int _deckIndex = 0;
 
   static const _gradients = [
     [Color(0xFF1A1A2E), Color(0xFF16213E)],
@@ -44,10 +44,11 @@ class _DailyVerseScreenState extends State<DailyVerseScreen>
   void initState() {
     super.initState();
 
-    // Pull from the full installed Bible (30,715 verses)
-    _allVerses = _buildAllVerses();
+    // Build verse deck: pick book first, then verse within it
+    _rebuildDeck();
     if (_allVerses.isEmpty) {
       _allVerses = [_VerseRef(text: 'No verses available yet.', reference: '')];
+      _shuffledDeck.addAll(_allVerses);
     }
 
     _spinController = AnimationController(
@@ -59,7 +60,7 @@ class _DailyVerseScreenState extends State<DailyVerseScreen>
       final progress = _spinController.value;
       if (progress < 1.0) {
         final steps = (progress * 35).floor();
-        final idx = steps % _allVerses.length;
+        final idx = steps % _shuffledDeck.length;
         if (idx != _displayIndex) {
           setState(() => _displayIndex = idx);
         }
@@ -75,11 +76,7 @@ class _DailyVerseScreenState extends State<DailyVerseScreen>
       }
     });
 
-    // Shuffle all verses — no repeats until all seen
-    _shuffledOrder.addAll(
-      List.generate(_allVerses.length, (i) => i)..shuffle(_random),
-    );
-    _displayIndex = _shuffledOrder[0];
+    _displayIndex = 0;
     _currentGradient = _random.nextInt(_gradients.length);
   }
 
@@ -92,28 +89,67 @@ class _DailyVerseScreenState extends State<DailyVerseScreen>
   void _roll() {
     if (_isSpinning) return;
 
-    _shuffleIndex++;
-    if (_shuffleIndex >= _shuffledOrder.length) {
-      _shuffledOrder.clear();
-      _shuffledOrder.addAll(
-        List.generate(_allVerses.length, (i) => i)..shuffle(_random),
-      );
-      _shuffleIndex = 0;
+    // Advance through shuffled deck
+    _deckIndex++;
+    if (_deckIndex >= _shuffledDeck.length) {
+      _rebuildDeck();
+      _deckIndex = 0;
     }
 
     setState(() {
       _isSpinning = true;
       _hasLanded = false;
-      _displayIndex = _shuffledOrder[_shuffleIndex];
+      _displayIndex = _deckIndex;
       _currentGradient = _random.nextInt(_gradients.length);
       _rollCount++;
     });
     _spinController.forward(from: 0.0);
   }
 
+  void _rebuildDeck() {
+    final allV = BibleLoader.allVerses;
+    if (allV.isEmpty) return;
+
+    _allVerses.clear();
+    final bounds = BibleLoader.boundaries;
+
+    const cc = [
+      50, 40, 27, 36, 34, 24, 21, 4, 31, 24,
+      22, 25, 29, 36, 10, 13, 10, 42, 150, 31,
+      12, 8, 66, 52, 5, 48, 12, 14, 3, 9,
+      1, 4, 7, 3, 3, 3, 2, 14, 4,
+      28, 16, 24, 21, 28, 16, 16, 13, 6, 6,
+      4, 4, 5, 3, 6, 4, 3, 1,
+      13, 5, 5, 3, 5, 1, 1, 1, 22,
+    ];
+
+    for (var bi = 0; bi < bounds.length; bi++) {
+      final book = bounds[bi];
+      final chapCnt = bi < cc.length ? cc[bi] : 1;
+      final avgV = book.verseCount ~/ chapCnt;
+      final vOff = _random.nextInt(book.verseCount);
+      final idx = book.startLine + vOff;
+      if (idx < allV.length) {
+        final text = allV[idx].trim();
+        if (text.isNotEmpty) {
+          final ch = (vOff ~/ avgV).clamp(0, chapCnt - 1) + 1;
+          final vr = (vOff % avgV) + 1;
+          _allVerses.add(_VerseRef(
+            index: idx, text: text,
+            reference: '${BibleLoader.bookNames[bi]} $ch:$vr',
+          ));
+        }
+      }
+    }
+
+    _shuffledDeck
+      ..clear()
+      ..addAll(List.from(_allVerses)..shuffle(_random));
+  }
+
   @override
   Widget build(BuildContext context) {
-    final verse = _allVerses[_displayIndex];
+    final verse = _shuffledDeck[_displayIndex];
 
     return Scaffold(
       backgroundColor: Colors.transparent,
