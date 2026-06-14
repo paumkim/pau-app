@@ -63,7 +63,30 @@ class _BibleReaderScreenState extends State<BibleReaderScreen> {
     return BibleLoader.getRange(book.startLine + start, count, lang: _language);
   }
 
-  String get _currentBookName => _books[_currentBook].name;
+  String get _currentBookName {
+    final tedim = _books[_currentBook].name;
+    if (_language == BibleLanguage.english) {
+      return _enBookNames[_currentBook];
+    }
+    return tedim;
+  }
+
+  static const _enBookNames = [
+    'Genesis', 'Exodus', 'Leviticus', 'Numbers', 'Deuteronomy',
+    'Joshua', 'Judges', 'Ruth', '1 Samuel', '2 Samuel',
+    '1 Kings', '2 Kings', '1 Chronicles', '2 Chronicles', 'Ezra',
+    'Nehemiah', 'Esther', 'Job', 'Psalms', 'Proverbs',
+    'Ecclesiastes', 'Song of Solomon', 'Isaiah', 'Jeremiah', 'Lamentations',
+    'Ezekiel', 'Daniel', 'Hosea', 'Joel', 'Amos',
+    'Obadiah', 'Jonah', 'Micah', 'Nahum', 'Habakkuk',
+    'Zephaniah', 'Haggai', 'Zechariah', 'Malachi',
+    'Matthew', 'Mark', 'Luke', 'John', 'Acts',
+    'Romans', '1 Corinthians', '2 Corinthians', 'Galatians', 'Ephesians',
+    'Philippians', 'Colossians', '1 Thessalonians', '2 Thessalonians',
+    '1 Timothy', '2 Timothy', 'Titus', 'Philemon',
+    'Hebrews', 'James', '1 Peter', '2 Peter', '1 John', '2 John', '3 John', 'Jude',
+    'Revelation',
+  ];
 
   void _openChapter(int bookIdx, int chapter) {
     setState(() {
@@ -96,6 +119,8 @@ class _BibleReaderScreenState extends State<BibleReaderScreen> {
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       builder: (ctx) => _BookChapterPicker(
         books: _books,
+        enBookNames: _enBookNames,
+        language: _language,
         currentBook: _currentBook,
         currentChapter: _currentChapter,
         onSelect: (bookIdx, chapter) {
@@ -293,12 +318,16 @@ class _BibleReaderScreenState extends State<BibleReaderScreen> {
 
 class _BookChapterPicker extends StatefulWidget {
   final List<_BookInfo> books;
+  final List<String> enBookNames;
+  final BibleLanguage language;
   final int currentBook;
   final int currentChapter;
   final void Function(int bookIdx, int chapter) onSelect;
 
   const _BookChapterPicker({
     required this.books,
+    required this.enBookNames,
+    required this.language,
     required this.currentBook,
     required this.currentChapter,
     required this.onSelect,
@@ -401,7 +430,10 @@ class _BookChapterPickerState extends State<_BookChapterPicker> {
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 10, vertical: 8),
-                              child: Text(b.name,
+                              child: Text(
+                                widget.language == BibleLanguage.english && bookIdx < widget.enBookNames.length
+                                    ? widget.enBookNames[bookIdx]
+                                    : b.name,
                                 style: TextStyle(
                                   fontSize: 13,
                                   fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
