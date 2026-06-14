@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../theme/app_theme.dart';
 
 class LyricsScreen extends StatefulWidget {
@@ -9,27 +11,33 @@ class LyricsScreen extends StatefulWidget {
 }
 
 class _LyricsScreenState extends State<LyricsScreen> {
-  final List<Map<String, String>> _allSongs = [
-    {'title': 'Pasian Tunga', 'artist': 'Zomi Worship', 'lyrics': _pasianTunga},
-    {'title': 'Ka Khua Ah', 'artist': 'Zomi Worship', 'lyrics': _kaKhuaAh},
-    {'title': 'Nang Mah Bang', 'artist': 'Zomi Worship', 'lyrics': _nangMahBang},
-    {'title': 'Itna Thupha', 'artist': 'Zomi Worship', 'lyrics': _itnaThupha},
-    {'title': 'Topa Ka Ngai', 'artist': 'Zomi Worship', 'lyrics': _topaKaNgai},
-  ];
-
+  List<Map<String, String>> _allSongs = [];
   List<Map<String, String>> _filtered = [];
   final _searchCtrl = TextEditingController();
+  bool _loading = true;
 
   @override
   void initState() {
     super.initState();
-    _filtered = List.from(_allSongs);
+    _loadSongs();
   }
 
   @override
   void dispose() {
     _searchCtrl.dispose();
     super.dispose();
+  }
+
+  Future<void> _loadSongs() async {
+    try {
+      final raw = await rootBundle.loadString('assets/lyrics/songs.json');
+      final list = jsonDecode(raw) as List;
+      _allSongs = list.map((s) => Map<String, String>.from(s as Map)).toList();
+    } catch (e) {
+      _allSongs = [];
+    }
+    _filtered = List.from(_allSongs);
+    if (mounted) setState(() => _loading = false);
   }
 
   void _search(String q) {
@@ -69,7 +77,6 @@ class _LyricsScreenState extends State<LyricsScreen> {
               ],
             ),
           ),
-          // Search bar
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: TextField(
@@ -89,45 +96,46 @@ class _LyricsScreenState extends State<LyricsScreen> {
             ),
           ),
           const SizedBox(height: 8),
-          // Results
           Expanded(
-            child: _filtered.isEmpty
-                ? Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.search_off,
-                          size: 40, color: AppTheme.textSecondaryLight.withAlpha(80)),
-                        const SizedBox(height: 12),
-                        Text('No songs found',
-                          style: TextStyle(color: AppTheme.textSecondaryLight)),
-                      ],
-                    ),
-                  )
-                : ListView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    itemCount: _filtered.length,
-                    itemBuilder: (context, index) {
-                      final song = _filtered[index];
-                      return Card(
-                        margin: const EdgeInsets.only(bottom: 6),
-                        child: ListTile(
-                          leading: CircleAvatar(
-                            backgroundColor: AppTheme.accent.withAlpha(25),
-                            child: Icon(Icons.music_note,
-                              color: AppTheme.accent, size: 18),
-                          ),
-                          title: Text(song['title']!,
-                            style: const TextStyle(
-                              fontSize: 14, fontWeight: FontWeight.w500)),
-                          subtitle: Text(song['artist']!,
-                            style: const TextStyle(fontSize: 12)),
-                          trailing: const Icon(Icons.play_circle_outline, size: 20),
-                          onTap: () => _showLyrics(context, song),
+            child: _loading
+                ? const Center(child: CircularProgressIndicator())
+                : _filtered.isEmpty
+                    ? Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.search_off,
+                              size: 40, color: AppTheme.textSecondaryLight.withAlpha(80)),
+                            const SizedBox(height: 12),
+                            Text('No songs found',
+                              style: TextStyle(color: AppTheme.textSecondaryLight)),
+                          ],
                         ),
-                      );
-                    },
-                  ),
+                      )
+                    : ListView.builder(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        itemCount: _filtered.length,
+                        itemBuilder: (context, index) {
+                          final song = _filtered[index];
+                          return Card(
+                            margin: const EdgeInsets.only(bottom: 6),
+                            child: ListTile(
+                              leading: CircleAvatar(
+                                backgroundColor: AppTheme.accent.withAlpha(25),
+                                child: Icon(Icons.music_note,
+                                  color: AppTheme.accent, size: 18),
+                              ),
+                              title: Text(song['title']!,
+                                style: const TextStyle(
+                                  fontSize: 14, fontWeight: FontWeight.w500)),
+                              subtitle: Text(song['artist']!,
+                                style: const TextStyle(fontSize: 12)),
+                              trailing: const Icon(Icons.play_circle_outline, size: 20),
+                              onTap: () => _showLyrics(context, song),
+                            ),
+                          );
+                        },
+                      ),
           ),
         ],
       ),
@@ -173,8 +181,7 @@ class _LyricsScreenState extends State<LyricsScreen> {
                 padding: const EdgeInsets.all(20),
                 child: Text(
                   song['lyrics'] ?? 'Lyrics coming soon.',
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    height: 1.8),
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(height: 1.8),
                 ),
               ),
             ),
@@ -184,29 +191,3 @@ class _LyricsScreenState extends State<LyricsScreen> {
     ));
   }
 }
-
-const _pasianTunga = '''Pasian tunga, Pasian tunga,
-Ka kha in Pasian tunga a nungta;
-Ama' tawh a kikhel lo,
-A tawntung nuntakna ka ngah hi.''';
-
-const _kaKhuaAh = '''Ka khua ah, ka khua ah,
-Nangmah thu-um mi khempeuh in
-Nangma lam et uh hi;
-Ka khua ah, ka khua ah,
-Pasian' mite in nang lam et uh hi.''';
-
-const _nangMahBang = '''Nang mah bang om lo,
-Pasian in hong piak khempeuh ah;
-Nang mah bang om lo,
-Ka kha in thuak nuam mah mah hi.''';
-
-const _itnaThupha = '''Itna thupha, itna thupha,
-Pasian in hong pia a itna;
-Ama' tapa a upa maimai in
-Nun tawntung i ngah theih nading hi.''';
-
-const _topaKaNgai = '''Topa ka ngai, Topa ka ngai,
-Ka kha in nang lam et hi;
-Nang tawh ka om ding,
-Tuuni panin kum khat dongin.''';
