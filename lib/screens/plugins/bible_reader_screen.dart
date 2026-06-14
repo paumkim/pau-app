@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart';
 import '../../services/bible_loader.dart' show BibleLoader, BibleLanguage;
+import '../../services/hive_storage.dart';
 
 class BibleReaderScreen extends StatefulWidget {
   const BibleReaderScreen({super.key});
@@ -40,6 +41,7 @@ class _BibleReaderScreenState extends State<BibleReaderScreen> {
     }
     _currentBook = 0;
     _currentChapter = 1;
+    _loadProgress();
   }
 
   @override
@@ -92,7 +94,23 @@ class _BibleReaderScreenState extends State<BibleReaderScreen> {
       _currentBook = bookIdx;
       _currentChapter = chapter.clamp(1, _books[bookIdx].chapters);
     });
+    _saveProgress();
     _scrollController.jumpTo(0);
+  }
+
+  Future<void> _loadProgress() async {
+    final saved = await HiveStorage.getProgress('bible_reader');
+    if (saved != null && mounted) {
+      final book = saved['book'] as int? ?? 0;
+      final ch = saved['chapter'] as int? ?? 1;
+      if (book >= 0 && book < _books.length) {
+        _openChapter(book, ch);
+      }
+    }
+  }
+
+  Future<void> _saveProgress() async {
+    await HiveStorage.saveProgress('bible_reader', _currentBook, _currentChapter);
   }
 
   void _prevChapter() {
