@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../theme/app_theme.dart';
 import '../../services/bible_loader.dart';
 
@@ -46,6 +47,8 @@ class _BibleReaderScreenState extends State<BibleReaderScreen> {
 
   @override
   void dispose() {
+    // Restore immersive mode when leaving
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
     _scrollController.dispose();
     super.dispose();
   }
@@ -127,7 +130,15 @@ class _BibleReaderScreenState extends State<BibleReaderScreen> {
           Positioned.fill(
             child: GestureDetector(
               behavior: HitTestBehavior.translucent,
-              onTap: () => setState(() => _showControls = !_showControls),
+              onTap: () {
+                setState(() => _showControls = !_showControls);
+                // Toggle system UI to match reading state
+                if (_showControls) {
+                  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+                } else {
+                  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+                }
+              },
               child: Padding(
                 padding: EdgeInsets.fromLTRB(20, topPad + 12, 20, 12),
                 child: Column(

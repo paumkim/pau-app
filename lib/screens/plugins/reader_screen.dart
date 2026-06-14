@@ -41,6 +41,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
 
   @override
   void dispose() {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
     _searchController.dispose();
     _scrollController.dispose();
     super.dispose();
@@ -292,7 +293,14 @@ class _ReaderScreenState extends State<ReaderScreen> {
           Positioned.fill(
             child: GestureDetector(
               behavior: HitTestBehavior.translucent,
-              onTap: () => setState(() => _showControls = !_showControls),
+              onTap: () {
+                setState(() => _showControls = !_showControls);
+                if (_showControls) {
+                  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+                } else {
+                  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+                }
+              },
               onHorizontalDragEnd: (d) {
                 if (d.primaryVelocity! < -80 && _hasNext) _goNext();
                 if (d.primaryVelocity! > 80 && _hasPrev) _goPrev();
