@@ -129,6 +129,44 @@ class _LyricsScreenState extends State<LyricsScreen> {
     );
   }
 
+  Widget _buildLyricsWithChords(LyricSong song) {
+    final lines = song.lyrics.split('\n');
+    final hasChords = song.chords.length == lines.length;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: List.generate(lines.length, (i) {
+        final chordLine = hasChords && i < song.chords.length ? song.chords[i] : '';
+        final lyricLine = lines[i];
+
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 4),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (chordLine.isNotEmpty)
+                Text(chordLine,
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    color: AppTheme.accent,
+                    fontFamily: 'monospace',
+                    height: 1.2,
+                  )),
+              Text(lyricLine,
+                style: TextStyle(
+                  fontSize: 16,
+                  height: 1.6,
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white : Colors.black87,
+                )),
+            ],
+          ),
+        );
+      }),
+    );
+  }
+
   void _showLyrics(BuildContext context, LyricSong song) {
     Navigator.of(context).push(MaterialPageRoute(
       builder: (_) => Scaffold(
@@ -166,11 +204,7 @@ class _LyricsScreenState extends State<LyricsScreen> {
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(20),
-                child: Text(
-                  song.lyrics,
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    height: 1.8),
-                ),
+                child: _buildLyricsWithChords(song),
               ),
             ),
           ],

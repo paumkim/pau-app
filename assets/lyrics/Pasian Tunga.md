@@ -1,6 +1,6 @@
 Zomi Worship
 
-Pasian tunga, Pasian tunga,
-Ka kha in Pasian tunga a nungta;
-Ama' tawh a kikhel lo,
-A tawntung nuntakna ka ngah hi.
+[G]Pasian tunga, [C]Pasian tunga,
+[G]Ka kha in [D]Pasian tunga a nungta;
+[G]Ama' tawh a [C]kikhel lo,
+[G]A tawntung [D]nuntakna ka [G]ngah hi.
