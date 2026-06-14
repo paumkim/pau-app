@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import '../theme/app_theme.dart';
-import '../models/plugin.dart';
 import '../config/globals.dart';
+import '../theme/app_theme.dart';
 import '../services/plugin_registry.dart';
 import 'translate_screen.dart';
 import 'vocab_screen.dart';
@@ -30,7 +29,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    final allPlugins = PluginRegistry.plugins;
     final enabled = PluginRegistry.enabledPlugins;
+    final available = PluginRegistry.disabledPlugins;
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -40,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           children: [
             const SizedBox(height: 8),
             Center(
-              child: Icon(Icons.translate, size: 40,
+              child: Icon(Icons.translate, size: 36,
                 color: Theme.of(context).colorScheme.primary),
             ),
             const SizedBox(height: 4),
@@ -59,96 +60,141 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                 title: Text('Search translations, books, phrases...',
                   style: TextStyle(fontSize: 14,
                     color: AppTheme.textSecondaryLight)),
-                trailing: const Icon(Icons.chevron_right, size: 18),
+                trailing: Icon(Icons.chevron_right, size: 16,
+                  color: AppTheme.textSecondaryLight.withAlpha(80)),
                 onTap: () => Navigator.of(context).push(
                   MaterialPageRoute(builder: (_) => const SearchScreen())),
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
 
+            // Quick translate
             Text('Translate',
               style: Theme.of(context).textTheme.titleSmall?.copyWith(
                 fontWeight: FontWeight.w600)),
             const SizedBox(height: 8),
-            _quickCard(context, 'Zomi ↔ English',
-              'For work, school, daily life', AppTheme.primary, () {
+            _quickCard('Zomi ↔ English', 'For work, school, daily life', () {
               tabNotifier.value = const TabRequest(1, sourceLang: 'zomi', targetLang: 'en');
             }),
             const SizedBox(height: 6),
-            _quickCard(context, 'Zomi ↔ Malay',
-              'For Malaysia diaspora', AppTheme.primary, () {
+            _quickCard('Zomi ↔ Malay', 'For Malaysia diaspora', () {
               tabNotifier.value = const TabRequest(1, sourceLang: 'zomi', targetLang: 'ms');
             }),
             const SizedBox(height: 6),
-            _quickCard(context, 'Zomi ↔ Chinese',
-              'For Myanmar Zomi community', AppTheme.accent, () {
+            _quickCard('Zomi ↔ Chinese', 'For Myanmar Zomi community', () {
               tabNotifier.value = const TabRequest(1, sourceLang: 'zomi', targetLang: 'zh');
             }),
 
             const SizedBox(height: 24),
+
+            // Available plugins — things to discover
+            if (available.isNotEmpty) ...[
+              Text('Discover',
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w600)),
+              const SizedBox(height: 8),
+              ...available.map((p) => Card(
+                child: ListTile(
+                  leading: CircleAvatar(
+                    radius: 18,
+                    backgroundColor: p.color.withAlpha(25),
+                    child: Icon(p.icon, color: p.color, size: 18),
+                  ),
+                  title: Text(p.name,
+                    style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 14)),
+                  subtitle: Text(p.description, style: const TextStyle(fontSize: 12)),
+                  trailing: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: AppTheme.primary.withAlpha(20),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text('GET',
+                      style: TextStyle(
+                        fontSize: 11, fontWeight: FontWeight.w600,
+                        color: AppTheme.primary)),
+                  ),
+                  onTap: () async {
+                    await PluginRegistry.toggle(p);
+                    setState(() {});
+                  },
+                ),
+              )),
+            ],
+
+            const SizedBox(height: 24),
+
+            // Your plugins (already installed)
+            if (enabled.isNotEmpty) ...[
+              Text('Your Plugins',
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w600)),
+              const SizedBox(height: 8),
+              ...enabled.map((p) => Card(
+                child: ListTile(
+                  leading: CircleAvatar(
+                    radius: 18,
+                    backgroundColor: p.color.withAlpha(25),
+                    child: Icon(p.icon, color: p.color, size: 18),
+                  ),
+                  title: Text(p.name,
+                    style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 14)),
+                  subtitle: Text('Tap to open', style: const TextStyle(fontSize: 12)),
+                  trailing: Icon(Icons.check_circle, size: 18, color: AppTheme.primary),
+                  onTap: () => _openPlugin(context, p.id),
+                ),
+              )),
+            ],
+
+            const SizedBox(height: 12),
+            // Quick links
             Text('Learn',
               style: Theme.of(context).textTheme.titleSmall?.copyWith(
                 fontWeight: FontWeight.w600)),
             const SizedBox(height: 8),
-            _quickCard(context, 'Vocabulary Builder',
-              'Swipeable flashcards from your saved translations',
-              AppTheme.accent, () {
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (_) => const VocabScreen(),
-              ));
+            _quickLink('Vocabulary Builder', 'Flashcards from your translations', Icons.auto_stories, AppTheme.accent, () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (_) => const VocabScreen()));
             }),
             const SizedBox(height: 6),
-            _quickCard(context, 'Zomi Phrases',
-              'Common phrases organized by category', AppTheme.primary, () {
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (_) => const PhrasebookScreen(),
-              ));
+            _quickLink('Zomi Phrases', 'Common phrases by category', Icons.forum, AppTheme.primary, () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (_) => const PhrasebookScreen()));
             }),
-
-            if (enabled.isNotEmpty) ...[
-              const SizedBox(height: 24),
-              Text('My Plugins',
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.w600)),
-              const SizedBox(height: 8),
-              ...enabled.map((p) => _pluginCard(context, p)),
-            ],
           ],
         ),
       ),
     );
   }
 
-  Widget _quickCard(BuildContext context, String title, String subtitle,
-      Color color, VoidCallback onTap) {
+  Widget _quickCard(String title, String subtitle, VoidCallback onTap) {
     return Card(
       child: ListTile(
         leading: CircleAvatar(
-          backgroundColor: color.withAlpha(25),
-          child: Icon(Icons.translate, color: color, size: 18),
+          backgroundColor: AppTheme.primary.withAlpha(20),
+          child: Icon(Icons.translate, color: AppTheme.primary, size: 18),
         ),
         title: Text(title,
           style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 14)),
         subtitle: Text(subtitle, style: const TextStyle(fontSize: 12)),
-        trailing: const Icon(Icons.chevron_right, size: 18),
+        trailing: Icon(Icons.arrow_forward_ios, size: 12,
+          color: AppTheme.textSecondaryLight.withAlpha(80)),
         onTap: onTap,
       ),
     );
   }
 
-  Widget _pluginCard(BuildContext context, PauPlugin plugin) {
+  Widget _quickLink(String title, String subtitle, IconData icon, Color color, VoidCallback onTap) {
     return Card(
       child: ListTile(
         leading: CircleAvatar(
-          radius: 18,
-          backgroundColor: plugin.color.withAlpha(25),
-          child: Icon(plugin.icon, color: plugin.color, size: 18),
+          backgroundColor: color.withAlpha(20),
+          child: Icon(icon, color: color, size: 18),
         ),
-        title: Text(plugin.name,
+        title: Text(title,
           style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 14)),
-        subtitle: Text(plugin.description, style: const TextStyle(fontSize: 12)),
-        trailing: const Icon(Icons.chevron_right, size: 18),
-        onTap: () => _openPlugin(context, plugin.id),
+        subtitle: Text(subtitle, style: const TextStyle(fontSize: 12)),
+        trailing: Icon(Icons.arrow_forward_ios, size: 12,
+          color: AppTheme.textSecondaryLight.withAlpha(80)),
+        onTap: onTap,
       ),
     );
   }
