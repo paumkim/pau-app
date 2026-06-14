@@ -60,22 +60,24 @@ class BibleLoader {
     'Mangmuhna',
   ];
 
-  /// Verse count per book (KJV/Tedim standard).
+  /// Verse count per book (KJV standard — used by both Tedim and English).
+  /// KJV sums to 31100. Tedim has 30715 (some verses combined).
+  /// We use KJV counts for navigation; actual text display is file-length-safe.
   static const _verseCounts = [
-    1533, 1213, 859, 1288, 959,  // Pentateuch
-    658, 618, 85, 810, 706,      // History
-    816, 719, 942, 822, 280,     // History cont.
-    279, 167, 1070, 2461, 915,   // Wisdom
-    222, 117, 3472, 3055, 154,   // Major prophets
-    1273, 357, 197, 73, 146,     // Minor prophets
-    21, 48, 105, 47, 56,         // Minor cont.
-    53, 38, 211, 67,             // Post-exile
-    1071, 678, 1151, 879, 1007,  // Gospels + Acts
-    433, 437, 257, 149, 155,     // Paul's letters
-    104, 95, 89, 47,             // Paul cont.
-    113, 83, 46, 25,             // Pastoral
-    303, 108, 105, 61, 79,       // General
-    23, 13, 25, 404,             // Revelation
+    1533, 1213, 859, 1288, 959,
+    658, 618, 85, 811, 695,
+    817, 719, 942, 822, 280,
+    406, 167, 1070, 2461, 915,
+    222, 117, 1292, 1364, 154,
+    1273, 357, 197, 73, 146,
+    21, 48, 105, 47, 56,
+    53, 38, 211, 55,
+    1068, 675, 1151, 879, 1007,
+    433, 437, 257, 149, 155,
+    104, 95, 89, 47,
+    113, 83, 46, 25,
+    303, 108, 105, 61, 105,
+    13, 15, 25, 405,
   ];
 
   static List<_BookBoundary> get boundaries {
