@@ -28,8 +28,8 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Build release APK
-        run: flutter build apk --release \
+      - name: Build debug APK (no signing needed)
+        run: flutter build apk --debug \
           --dart-define=HF_TOKEN=${{ secrets.HF_TOKEN }} \
           --dart-define=DEEPSEEK_TOKEN=${{ secrets.DEEPSEEK_TOKEN }}
 
@@ -37,7 +37,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Pau-APK
-          path: build/app/outputs/flutter-apk/app-release.apk
+          path: build/app/outputs/flutter-apk/app-debug.apk
 
       - name: Create GitHub Release
         if: github.event_name == 'workflow_dispatch'
