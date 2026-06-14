@@ -172,35 +172,57 @@ class _LyricsScreenState extends State<LyricsScreen> {
       builder: (_) => Scaffold(
         body: Column(
           children: [
-            Container(
-              padding: const EdgeInsets.fromLTRB(16, 48, 16, 12),
-              decoration: BoxDecoration(
-                color: AppTheme.accent.withAlpha(10),
-                border: Border(
-                  bottom: BorderSide(color: Colors.grey.shade200)),
-              ),
-              child: Row(
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.arrow_back),
-                    onPressed: () => Navigator.pop(context)),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(song.title,
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w600)),
-                        Text(song.artist,
-                          style: TextStyle(
-                            fontSize: 13, color: AppTheme.textSecondaryLight)),
-                      ],
+              Container(
+                padding: const EdgeInsets.fromLTRB(16, 48, 16, 12),
+                decoration: BoxDecoration(
+                  color: AppTheme.accent.withAlpha(10),
+                  border: Border(
+                    bottom: BorderSide(color: Colors.grey.shade200)),
+                ),
+                child: Row(
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.arrow_back),
+                      onPressed: () => Navigator.pop(context)),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(song.title,
+                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.w600)),
+                          Text(song.artist,
+                            style: TextStyle(
+                              fontSize: 13, color: AppTheme.textSecondaryLight)),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                    if (song.key != null)
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: AppTheme.accent.withAlpha(25),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: AppTheme.accent.withAlpha(60)),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.music_note, size: 12, color: AppTheme.accent),
+                            const SizedBox(width: 4),
+                            Text('Key: ${song.key}',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                color: AppTheme.accent,
+                              )),
+                          ],
+                        ),
+                      ),
+                  ],
+                ),
               ),
-            ),
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(20),

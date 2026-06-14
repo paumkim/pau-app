@@ -29,19 +29,32 @@ class LyricsLoader {
 
   static LyricSong _parseSong(String path, String content) {
     final lines = content.split('\n').where((l) => l.trim().isNotEmpty).toList();
-    final artist = lines.isNotEmpty ? lines.first.trim() : '';
-    final lyrics = lines.skip(1).join('\n').trim();
     final title = path
         .replaceAll('assets/lyrics/', '')
         .replaceAll('.md', '');
+
+    String artist = '';
+    String? key;
+    int bodyStart = 0;
+
+    // Parse metadata from first lines
+    if (lines.isNotEmpty) {
+      artist = lines.first.trim();
+      bodyStart = 1;
+    }
+    if (lines.length > 1 && lines[1].trim().startsWith('Key:')) {
+      key = lines[1].trim().replaceAll('Key:', '').trim();
+      bodyStart = 2;
+    }
+
+    final lyrics = lines.skip(bodyStart).join('\n').trim();
 
     // Extract chords from lyrics lines
     final chordLines = <String>[];
     final lyricLines = <String>[];
     for (final line in lyrics.split('\n')) {
-      final chords = RegExp(r'\[([A-G][#b]?m?(?:7|maj7|dim|sus|aug)?)\]').allMatches(line);
+      final chords = RegExp(r'\[([A-G][#b]?m?(?:7|maj7|dim|sus|aug|add[0-9])?)\]').allMatches(line);
       if (chords.isNotEmpty) {
-        // Build a chord row from the matches
         final chordRow = StringBuffer();
         var lastEnd = 0;
         for (final m in chords) {
@@ -50,8 +63,7 @@ class LyricsLoader {
           lastEnd = m.end;
         }
         chordLines.add(chordRow.toString());
-        // Remove chord markers for lyric display
-        lyricLines.add(line.replaceAll(RegExp(r'\[([A-G][#b]?m?(?:7|maj7|dim|sus|aug)?)\]'), '').trim());
+        lyricLines.add(line.replaceAll(RegExp(r'\[([A-G][#b]?m?(?:7|maj7|dim|sus|aug|add[0-9])?)\]'), '').trim());
       } else {
         chordLines.add('');
         lyricLines.add(line);
@@ -61,6 +73,7 @@ class LyricsLoader {
     return LyricSong(
       title: title,
       artist: artist,
+      key: key,
       lyrics: lyricLines.join('\n'),
       chords: chordLines,
     );
@@ -70,12 +83,14 @@ class LyricsLoader {
 class LyricSong {
   final String title;
   final String artist;
+  final String? key;
   final String lyrics;
   final List<String> chords;
 
   const LyricSong({
     required this.title,
     required this.artist,
+    this.key,
     required this.lyrics,
     this.chords = const [],
   });
