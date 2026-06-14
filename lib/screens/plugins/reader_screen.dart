@@ -291,6 +291,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
           // Reading content
           Positioned.fill(
             child: GestureDetector(
+              behavior: HitTestBehavior.translucent,
               onTap: () => setState(() => _showControls = !_showControls),
               onHorizontalDragEnd: (d) {
                 if (d.primaryVelocity! < -80 && _hasNext) _goNext();

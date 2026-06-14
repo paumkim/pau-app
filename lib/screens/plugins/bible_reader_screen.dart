@@ -126,6 +126,7 @@ class _BibleReaderScreenState extends State<BibleReaderScreen> {
           // Main scrollable content
           Positioned.fill(
             child: GestureDetector(
+              behavior: HitTestBehavior.translucent,
               onTap: () => setState(() => _showControls = !_showControls),
               child: Padding(
                 padding: EdgeInsets.fromLTRB(20, topPad + 12, 20, 12),
