@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart';
 import '../../services/bible_loader.dart' show BibleLoader, BibleLanguage;
@@ -163,9 +162,10 @@ class _BibleReaderScreenState extends State<BibleReaderScreen> {
       body: SafeArea(
         child: GestureDetector(
           onHorizontalDragEnd: (d) {
-            if (d.primaryVelocity! < -80 && hasNext) {
+            final velocity = d.primaryVelocity ?? 0;
+          if (velocity < -80 && hasNext) {
               _nextChapter();
-            } else if (d.primaryVelocity! > 80 && hasPrev) {
+            } else if (velocity > 80 && hasPrev) {
               _prevChapter();
             }
           },

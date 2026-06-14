@@ -4,7 +4,6 @@ import '../services/translation_cache.dart';
 import '../services/phrasebook.dart';
 import '../services/book_registry.dart';
 import '../models/book_content.dart';
-import 'translate_screen.dart';
 import 'vocab_screen.dart';
 import 'phrasebook_screen.dart';
 import 'plugins/reader_screen.dart';
@@ -242,7 +241,7 @@ class _SearchResult {
   final int? section;
   final int? chapter;
 
-  _SearchResult({
+  const _SearchResult({
     required this.type,
     required this.title,
     required this.subtitle,

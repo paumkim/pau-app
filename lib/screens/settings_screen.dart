@@ -6,7 +6,6 @@ import 'privacy_screen.dart';
 import '../config/globals.dart';
 import '../config/app_config.dart';
 import '../services/translation_cache.dart';
-import '../widgets/error_widgets.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});

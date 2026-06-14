@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../config/globals.dart';
 import '../theme/app_theme.dart';
 import '../services/plugin_registry.dart';
-import 'translate_screen.dart';
 import 'vocab_screen.dart';
 import 'phrasebook_screen.dart';
 import 'search_screen.dart';
@@ -29,7 +28,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    final allPlugins = PluginRegistry.plugins;
     final enabled = PluginRegistry.enabledPlugins;
     final available = PluginRegistry.disabledPlugins;
 

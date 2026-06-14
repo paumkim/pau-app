@@ -22,7 +22,7 @@ class _DailyVerseScreenState extends State<DailyVerseScreen>
 
   // Verse data
   List<_VerseRef> _allVerses = [];
-  final List<_VerseRef> _shuffledDeck = [];
+  List<_VerseRef> _shuffledDeck = [];
   int _deckIndex = 0;
 
   static const _gradients = [
@@ -46,9 +46,9 @@ class _DailyVerseScreenState extends State<DailyVerseScreen>
 
     // Build verse deck: pick book first, then verse within it
     _rebuildDeck();
-    if (_allVerses.isEmpty) {
+    if (_shuffledDeck.isEmpty) {
       _allVerses = [_VerseRef(text: 'No verses available yet.', reference: '')];
-      _shuffledDeck.addAll(_allVerses);
+      _shuffledDeck = List.from(_allVerses);
     }
 
     _spinController = AnimationController(
@@ -318,47 +318,4 @@ class _VerseRef {
   final int index;
   _VerseRef({required this.text, required this.reference, int? index})
       : index = index ?? -1;
-}
-
-List<_VerseRef> _buildAllVerses() {
-  final verses = BibleLoader.allVerses;
-  if (verses.isEmpty) return [];
-  final bounds = BibleLoader.boundaries;
-  final result = <_VerseRef>[];
-
-  // Standard chapter counts per book (same as Bible reader)
-  const chapterCounts = [
-    50, 40, 27, 36, 34, 24, 21, 4, 31, 24,
-    22, 25, 29, 36, 10, 13, 10, 42, 150, 31,
-    12, 8, 66, 52, 5, 48, 12, 14, 3, 9,
-    1, 4, 7, 3, 3, 3, 2, 14, 4,
-    28, 16, 24, 21, 28, 16, 16, 13, 6, 6,
-    4, 4, 5, 3, 6, 4, 3, 1,
-    13, 5, 5, 3, 5, 1, 1, 1, 22,
-  ];
-
-  var globalIdx = 0;
-
-  for (var bi = 0; bi < bounds.length; bi++) {
-    final book = bounds[bi];
-    final bookName = BibleLoader.bookNames[bi];
-    final chapters = bi < chapterCounts.length ? chapterCounts[bi] : 1;
-    final avgPerChapter = book.verseCount ~/ chapters;
-
-    for (var vi = 0; vi < book.verseCount; vi++) {
-      if (globalIdx >= verses.length) break;
-      final text = verses[globalIdx].trim();
-      if (text.isNotEmpty) {
-        final chapter = (vi ~/ avgPerChapter).clamp(0, chapters - 1) + 1;
-        final verseInChapter = (vi % avgPerChapter) + 1;
-        result.add(_VerseRef(
-          index: globalIdx,
-          text: text,
-          reference: '$bookName $chapter:$verseInChapter',
-        ));
-      }
-      globalIdx++;
-    }
-  }
-  return result;
 }

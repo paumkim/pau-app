@@ -302,8 +302,9 @@ class _ReaderScreenState extends State<ReaderScreen> {
                 }
               },
               onHorizontalDragEnd: (d) {
-                if (d.primaryVelocity! < -80 && _hasNext) _goNext();
-                if (d.primaryVelocity! > 80 && _hasPrev) _goPrev();
+                final velocity = d.primaryVelocity ?? 0;
+                if (velocity < -80 && _hasNext) _goNext();
+                if (velocity > 80 && _hasPrev) _goPrev();
               },
               child: Padding(
                 padding: EdgeInsets.fromLTRB(
@@ -630,5 +631,5 @@ class _ReaderScreenState extends State<ReaderScreen> {
 class _SearchResult {
   final int section, chapter;
   final String text;
-  _SearchResult({required this.section, required this.chapter, required this.text});
+  const _SearchResult({required this.section, required this.chapter, required this.text});
 }

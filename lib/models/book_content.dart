@@ -5,12 +5,12 @@ class BookContent {
   final String author;
   final List<BookSection> sections;
 
-  BookContent({
+  const BookContent({
     required this.id,
-    required this.title,
+    this.title = 'Untitled',
     this.subtitle = '',
     this.author = '',
-    required this.sections,
+    this.sections = const [],
   });
 }
 
@@ -25,5 +25,5 @@ class BookChapter {
   final int number;
   final String content;
 
-  BookChapter({required this.number, this.content = ''});
+  const BookChapter({required this.number, this.content = ''});
 }

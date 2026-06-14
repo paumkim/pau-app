@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'theme/app_theme.dart';
-import 'config/app_config.dart';
 import 'config/globals.dart';
 import 'services/book_registry.dart';
 import 'services/plugin_registry.dart';

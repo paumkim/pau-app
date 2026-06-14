@@ -6,7 +6,6 @@ import '../theme/app_theme.dart';
 import '../services/chat_service.dart';
 import '../services/hive_storage.dart';
 import '../services/connectivity_service.dart';
-import '../config/app_config.dart';
 import '../config/globals.dart';
 import '../widgets/error_widgets.dart';
 import '../widgets/keyboard_dismiss.dart';
@@ -110,15 +109,6 @@ class _ConversationScreenState extends State<ConversationScreen> with WidgetsBin
     });
     _saveHistory();
     _scrollToBottom();
-  }
-
-  void _updateLastMessage(String text) {
-    // For streaming: update the last bot message in-place
-    if (_messages.isNotEmpty && !_messages.last.isUser) {
-      setState(() => _messages.last = _ChatMessage(
-        text: text, isUser: false, time: _messages.last.time));
-      _scrollToBottom();
-    }
   }
 
   Future<void> _sendMessage() async {
@@ -307,7 +297,8 @@ class _ConversationScreenState extends State<ConversationScreen> with WidgetsBin
       controller: _scrollController,
       physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      itemCount: _messages.length + (_isLoading && _messages.lastOrNull?.text.isNotEmpty != false ? 0 : 0),
+      itemCount: _messages.length + (_isLoading &&
+          (_messages.isEmpty || _messages.last.isUser || _messages.last.text.isNotEmpty) ? 1 : 0),
       itemBuilder: (context, index) {
         final msg = _messages[index];
         return _buildBubble(msg, userColor, botColor);
