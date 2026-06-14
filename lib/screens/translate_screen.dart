@@ -341,13 +341,79 @@ class _LanguageDropdown extends StatelessWidget {
     switch (code) {
       case 'zomi':
         return Image.asset('assets/icons/zomi_flag.png', width: 22, height: 16,
-          errorBuilder: (_, __, ___) => const Icon(Icons.flag, size: 16, color: Colors.blue));
+          errorBuilder: (_, __, ___) => _simpleFlag(code));
       case 'en':
-        return const Icon(Icons.language, size: 18, color: Color(0xFF1A47B8));
+        return _simpleFlag('en');
       case 'ms':
-        return const Icon(Icons.language, size: 18, color: Color(0xFFCC0000));
+        return _simpleFlag('ms');
       case 'zh':
-        return const Icon(Icons.language, size: 18, color: Color(0xFFDE2910));
+        return _simpleFlag('zh');
+      default:
+        return const Icon(Icons.flag, size: 16);
+    }
+  }
+
+  static Widget _simpleFlag(String code) {
+    // Build a recognizable colored flag representation
+    switch (code) {
+      case 'en':
+        return Container(
+          width: 22, height: 16,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(2),
+            color: Colors.white,
+            border: Border.all(color: Colors.grey.shade300, width: 0.5),
+          ),
+          child: Stack(
+            children: [
+              // Red Cross of St George
+              Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(width: 22, height: 3, color: const Color(0xFFCE1124)),
+                    const SizedBox(height: 7),
+                    Container(width: 22, height: 3, color: const Color(0xFFCE1124)),
+                  ],
+                ),
+              ),
+              Center(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(width: 3, height: 16, color: const Color(0xFFCE1124)),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      case 'ms':
+        return Container(
+          width: 22, height: 16,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(2),
+            border: Border.all(color: Colors.grey.shade300, width: 0.5),
+          ),
+          child: Column(
+            children: List.generate(7, (i) => Expanded(
+              child: Container(
+                color: i.isEven ? const Color(0xFFCC0000) : Colors.white,
+              ),
+            )),
+          ),
+        );
+      case 'zh':
+        return Container(
+          width: 22, height: 16,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(2),
+            color: const Color(0xFFDE2910),
+          ),
+          child: const Center(
+            child: Icon(Icons.star, size: 10, color: Color(0xFFFFDE00)),
+          ),
+        );
       default:
         return const Icon(Icons.flag, size: 16);
     }
