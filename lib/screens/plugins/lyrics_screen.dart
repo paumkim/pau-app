@@ -1,7 +1,6 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import '../../theme/app_theme.dart';
+import '../../services/lyrics_loader.dart';
 
 class LyricsScreen extends StatefulWidget {
   const LyricsScreen({super.key});
@@ -11,15 +10,15 @@ class LyricsScreen extends StatefulWidget {
 }
 
 class _LyricsScreenState extends State<LyricsScreen> {
-  List<Map<String, String>> _allSongs = [];
-  List<Map<String, String>> _filtered = [];
+  List<LyricSong> _filtered = [];
   final _searchCtrl = TextEditingController();
   bool _loading = true;
 
   @override
   void initState() {
     super.initState();
-    _loadSongs();
+    _filtered = List.from(LyricsLoader.songs);
+    _loading = false;
   }
 
   @override
@@ -28,27 +27,15 @@ class _LyricsScreenState extends State<LyricsScreen> {
     super.dispose();
   }
 
-  Future<void> _loadSongs() async {
-    try {
-      final raw = await rootBundle.loadString('assets/lyrics/songs.json');
-      final list = jsonDecode(raw) as List;
-      _allSongs = list.map((s) => Map<String, String>.from(s as Map)).toList();
-    } catch (e) {
-      _allSongs = [];
-    }
-    _filtered = List.from(_allSongs);
-    if (mounted) setState(() => _loading = false);
-  }
-
   void _search(String q) {
     setState(() {
       if (q.trim().isEmpty) {
-        _filtered = List.from(_allSongs);
+        _filtered = List.from(LyricsLoader.songs);
       } else {
         final query = q.toLowerCase();
-        _filtered = _allSongs.where((s) =>
-          (s['title'] ?? '').toLowerCase().contains(query) ||
-          (s['artist'] ?? '').toLowerCase().contains(query)
+        _filtered = LyricsLoader.songs.where((s) =>
+          s.title.toLowerCase().contains(query) ||
+          s.artist.toLowerCase().contains(query)
         ).toList();
       }
     });
@@ -71,7 +58,7 @@ class _LyricsScreenState extends State<LyricsScreen> {
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.w600)),
                 const Spacer(),
-                Text('${_allSongs.length} songs',
+                Text('${LyricsLoader.songs.length} songs',
                   style: TextStyle(
                     fontSize: 13, color: AppTheme.textSecondaryLight)),
               ],
@@ -125,10 +112,10 @@ class _LyricsScreenState extends State<LyricsScreen> {
                                 child: Icon(Icons.music_note,
                                   color: AppTheme.accent, size: 18),
                               ),
-                              title: Text(song['title']!,
+                              title: Text(song.title,
                                 style: const TextStyle(
                                   fontSize: 14, fontWeight: FontWeight.w500)),
-                              subtitle: Text(song['artist']!,
+                              subtitle: Text(song.artist,
                                 style: const TextStyle(fontSize: 12)),
                               trailing: const Icon(Icons.play_circle_outline, size: 20),
                               onTap: () => _showLyrics(context, song),
@@ -142,7 +129,7 @@ class _LyricsScreenState extends State<LyricsScreen> {
     );
   }
 
-  void _showLyrics(BuildContext context, Map<String, String> song) {
+  void _showLyrics(BuildContext context, LyricSong song) {
     Navigator.of(context).push(MaterialPageRoute(
       builder: (_) => Scaffold(
         body: Column(
@@ -164,10 +151,10 @@ class _LyricsScreenState extends State<LyricsScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(song['title']!,
+                        Text(song.title,
                           style: Theme.of(context).textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.w600)),
-                        Text(song['artist']!,
+                        Text(song.artist,
                           style: TextStyle(
                             fontSize: 13, color: AppTheme.textSecondaryLight)),
                       ],
@@ -180,8 +167,9 @@ class _LyricsScreenState extends State<LyricsScreen> {
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(20),
                 child: Text(
-                  song['lyrics'] ?? 'Lyrics coming soon.',
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(height: 1.8),
+                  song.lyrics,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    height: 1.8),
                 ),
               ),
             ),

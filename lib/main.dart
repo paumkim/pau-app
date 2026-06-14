@@ -7,6 +7,7 @@ import 'services/book_registry.dart';
 import 'services/plugin_registry.dart';
 import 'services/hive_storage.dart';
 import 'services/bible_loader.dart';
+import 'services/lyrics_loader.dart';
 import 'app.dart';
 import 'screens/onboarding_screen.dart';
 
@@ -46,6 +47,13 @@ Future<void> main() async {
     await PluginRegistry.loadAll();
   } catch (e) {
     debugPrint('Failed to load plugins: $e');
+  }
+
+  // Load lyrics from .md files
+  try {
+    await LyricsLoader.loadAll();
+  } catch (e) {
+    debugPrint('Lyrics load failed: $e');
   }
 
   // Load the full Tedim Bible (30,715 verses)
