@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import '../models/plugin.dart';
+import '../config/globals.dart';
 import '../services/plugin_registry.dart';
 import 'translate_screen.dart';
 import 'vocab_screen.dart';
@@ -71,29 +72,17 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             const SizedBox(height: 8),
             _quickCard(context, 'Zomi ↔ English',
               'For work, school, daily life', AppTheme.primary, () {
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (_) => const TranslateScreen(
-                  initialSource: 'zomi', initialTarget: 'en',
-                ),
-              ));
+              tabNotifier.value = const TabRequest(1, sourceLang: 'zomi', targetLang: 'en');
             }),
             const SizedBox(height: 6),
             _quickCard(context, 'Zomi ↔ Malay',
               'For Malaysia diaspora', AppTheme.primary, () {
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (_) => const TranslateScreen(
-                  initialSource: 'zomi', initialTarget: 'ms',
-                ),
-              ));
+              tabNotifier.value = const TabRequest(1, sourceLang: 'zomi', targetLang: 'ms');
             }),
             const SizedBox(height: 6),
             _quickCard(context, 'Zomi ↔ Chinese',
               'For Myanmar Zomi community', AppTheme.accent, () {
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (_) => const TranslateScreen(
-                  initialSource: 'zomi', initialTarget: 'zh',
-                ),
-              ));
+              tabNotifier.value = const TabRequest(1, sourceLang: 'zomi', targetLang: 'zh');
             }),
 
             const SizedBox(height: 24),

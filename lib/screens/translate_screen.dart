@@ -282,14 +282,13 @@ class _TranslateScreenState extends State<TranslateScreen> {
         GestureDetector(
           onTap: _swapLanguages,
           child: Container(
-            padding: const EdgeInsets.all(6),
-            margin: const EdgeInsets.symmetric(horizontal: 4),
+            padding: const EdgeInsets.all(4),
+            margin: const EdgeInsets.symmetric(horizontal: 2),
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary.withAlpha(15),
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(6),
             ),
-            child: Icon(Icons.swap_horiz, size: 20,
-              color: Theme.of(context).colorScheme.primary),
+            child: Icon(Icons.swap_vert, size: 18,
+              color: Theme.of(context).colorScheme.onSurface.withAlpha(100)),
           ),
         ),
         Expanded(
