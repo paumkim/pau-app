@@ -120,8 +120,6 @@ class _BibleReaderScreenState extends State<BibleReaderScreen> {
     final bgColor = isDark ? const Color(0xFF1A1A2E) : const Color(0xFFFDF8F0);
     final textColor = isDark ? const Color(0xFFE4E6EB) : const Color(0xFF2D1B00);
     final verseNumColor = isDark ? AppTheme.bubbleUserDark : AppTheme.primary;
-    final topPad = MediaQuery.of(context).viewPadding.top;
-
     return Scaffold(
       backgroundColor: bgColor,
       body: Stack(
@@ -140,7 +138,7 @@ class _BibleReaderScreenState extends State<BibleReaderScreen> {
                 }
               },
               child: Padding(
-                padding: EdgeInsets.fromLTRB(20, topPad + 12, 20, 12),
+                padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
                 child: Column(
                   children: [
                     // Chapter header
@@ -231,8 +229,9 @@ class _BibleReaderScreenState extends State<BibleReaderScreen> {
 
           // Top bar overlay
           if (_showControls)
-            Container(
-              padding: EdgeInsets.fromLTRB(4, topPad + 4, 4, 0),
+            SafeArea(
+              child: Container(
+                padding: const EdgeInsets.fromLTRB(4, 4, 4, 0),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
@@ -265,6 +264,7 @@ class _BibleReaderScreenState extends State<BibleReaderScreen> {
                   const SizedBox(width: 8),
                 ],
               ),
+            ),
             ),
 
           // Bottom bar — prev/next chapter
