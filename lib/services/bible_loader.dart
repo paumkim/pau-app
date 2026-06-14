@@ -1,25 +1,44 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
-/// Loads the full Tedim Bible (30,715 verses) from asset at runtime.
+enum BibleLanguage { tedim, english }
+
+/// Loads the full Tedim Bible (30,715 verses) + English KJV from assets.
 /// Shared between Bible reader and daily verse.
 class BibleLoader {
   static List<String>? _verses;
+  static List<String>? _enVerses;
 
   static bool get isLoaded => _verses != null;
   static int get totalVerses => _verses?.length ?? 0;
   static List<String> get allVerses => _verses ?? [];
+  static List<String> get enVerses => _enVerses ?? [];
 
   static Future<void> load() async {
     if (_verses != null) return;
+    // Tedim
     final raw = await rootBundle.loadString('assets/bible/tedim_verses.txt');
     _verses = raw.split('\n').where((l) => l.trim().isNotEmpty).toList();
+    // English KJV
+    try {
+      final enRaw = await rootBundle.loadString('assets/bible/eng_kjv.txt');
+      _enVerses = enRaw.split('\n').where((l) => l.trim().isNotEmpty).toList();
+    } catch (e) {
+      _enVerses = [];
+    }
   }
 
-  /// Get verses for a specific line range.
-  static List<String> getRange(int start, int count) {
-    if (_verses == null) return [];
-    final end = (start + count).clamp(0, _verses!.length);
-    return _verses!.sublist(start, end);
+  /// Get verses for a specific line range in the active language.
+  static List<String> getRange(int start, int count, {BibleLanguage lang = BibleLanguage.tedim}) {
+    final verses = lang == BibleLanguage.english ? _enVerses : _verses;
+    if (verses == null) return [];
+    final end = (start + count).clamp(0, verses.length);
+    return verses.sublist(start, end);
+  }
+
+  /// All verses in a specific language.
+  static List<String> allFor(BibleLanguage lang) {
+    return lang == BibleLanguage.english ? enVerses : allVerses;
   }
 
   /// Book boundaries: [bookIndex] = start line.

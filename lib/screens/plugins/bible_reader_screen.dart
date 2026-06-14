@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart';
-import '../../services/bible_loader.dart';
+import '../../services/bible_loader.dart' show BibleLoader, BibleLanguage;
 
 class BibleReaderScreen extends StatefulWidget {
   const BibleReaderScreen({super.key});
@@ -15,6 +15,7 @@ class _BibleReaderScreenState extends State<BibleReaderScreen> {
   late int _currentBook;
   late int _currentChapter;
   final _scrollController = ScrollController();
+  BibleLanguage _language = BibleLanguage.tedim;
 
   static final List<int> _chapterCounts = [
     50, 40, 27, 36, 34, 24, 21, 4, 31, 24,
@@ -59,7 +60,7 @@ class _BibleReaderScreenState extends State<BibleReaderScreen> {
         : (_currentChapter * avgPerChapter).clamp(start + 1, totalVerses);
     final count = (end - start).clamp(1, totalVerses - start);
     if (count <= 0) return [];
-    return BibleLoader.getRange(book.startLine + start, count);
+    return BibleLoader.getRange(book.startLine + start, count, lang: _language);
   }
 
   String get _currentBookName => _books[_currentBook].name;
@@ -147,14 +148,13 @@ class _BibleReaderScreenState extends State<BibleReaderScreen> {
             children: [
               // Header — back, chapter title, position
               Padding(
-                padding: const EdgeInsets.fromLTRB(4, 8, 12, 4),
+                padding: const EdgeInsets.fromLTRB(4, 8, 4, 4),
                 child: Row(
                   children: [
                     IconButton(
                       icon: Icon(Icons.arrow_back,
                         color: accentColor.withAlpha(150), size: 20),
                       onPressed: () => Navigator.pop(context)),
-                    const Spacer(),
                     GestureDetector(
                       onTap: () => _showPicker(context),
                       child: Row(
@@ -171,9 +171,38 @@ class _BibleReaderScreenState extends State<BibleReaderScreen> {
                       ),
                     ),
                     const Spacer(),
+                    // Language toggle
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _language = _language == BibleLanguage.tedim
+                              ? BibleLanguage.english
+                              : BibleLanguage.tedim;
+                        });
+                        _scrollController.jumpTo(0);
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                        decoration: BoxDecoration(
+                          color: accentColor.withAlpha(25),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Text(
+                          _language == BibleLanguage.tedim ? 'TED' : 'ENG',
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w700,
+                            color: accentColor,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 6),
                     Text('${_currentChapter}/${_books[_currentBook].chapters}',
                       style: TextStyle(
                         fontSize: 11, color: accentColor.withAlpha(80))),
+                    const SizedBox(width: 6),
                   ],
                 ),
               ),
