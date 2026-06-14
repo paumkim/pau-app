@@ -9,7 +9,7 @@ class LyricsScreen extends StatefulWidget {
 }
 
 class _LyricsScreenState extends State<LyricsScreen> {
-  final List<Map<String, String>> _songs = [
+  final List<Map<String, String>> _allSongs = [
     {'title': 'Pasian Tunga', 'artist': 'Zomi Worship', 'lyrics': _pasianTunga},
     {'title': 'Ka Khua Ah', 'artist': 'Zomi Worship', 'lyrics': _kaKhuaAh},
     {'title': 'Nang Mah Bang', 'artist': 'Zomi Worship', 'lyrics': _nangMahBang},
@@ -17,13 +17,42 @@ class _LyricsScreenState extends State<LyricsScreen> {
     {'title': 'Topa Ka Ngai', 'artist': 'Zomi Worship', 'lyrics': _topaKaNgai},
   ];
 
+  List<Map<String, String>> _filtered = [];
+  final _searchCtrl = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _filtered = List.from(_allSongs);
+  }
+
+  @override
+  void dispose() {
+    _searchCtrl.dispose();
+    super.dispose();
+  }
+
+  void _search(String q) {
+    setState(() {
+      if (q.trim().isEmpty) {
+        _filtered = List.from(_allSongs);
+      } else {
+        final query = q.toLowerCase();
+        _filtered = _allSongs.where((s) =>
+          (s['title'] ?? '').toLowerCase().contains(query) ||
+          (s['artist'] ?? '').toLowerCase().contains(query)
+        ).toList();
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [
           Container(
-            padding: const EdgeInsets.fromLTRB(16, 48, 16, 12),
+            padding: const EdgeInsets.fromLTRB(16, 48, 16, 8),
             child: Row(
               children: [
                 IconButton(
@@ -34,37 +63,71 @@ class _LyricsScreenState extends State<LyricsScreen> {
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.w600)),
                 const Spacer(),
-                Text('${_songs.length} songs',
+                Text('${_allSongs.length} songs',
                   style: TextStyle(
                     fontSize: 13, color: AppTheme.textSecondaryLight)),
               ],
             ),
           ),
-          Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              itemCount: _songs.length,
-              itemBuilder: (context, index) {
-                final song = _songs[index];
-                return Card(
-                  margin: const EdgeInsets.only(bottom: 6),
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      backgroundColor: AppTheme.accent.withAlpha(25),
-                      child: Icon(Icons.music_note,
-                        color: AppTheme.accent, size: 18),
-                    ),
-                    title: Text(song['title']!,
-                      style: const TextStyle(
-                        fontSize: 14, fontWeight: FontWeight.w500)),
-                    subtitle: Text(song['artist']!,
-                      style: const TextStyle(fontSize: 12)),
-                    trailing: const Icon(Icons.play_circle_outline, size: 20),
-                    onTap: () => _showLyrics(context, song),
-                  ),
-                );
-              },
+          // Search bar
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: TextField(
+              controller: _searchCtrl,
+              decoration: InputDecoration(
+                hintText: 'Search songs...',
+                prefixIcon: const Icon(Icons.search, size: 20),
+                contentPadding: const EdgeInsets.symmetric(vertical: 8),
+                suffixIcon: _searchCtrl.text.isNotEmpty
+                    ? IconButton(
+                        icon: const Icon(Icons.clear, size: 18),
+                        onPressed: () { _searchCtrl.clear(); _search(''); },
+                      )
+                    : null,
+              ),
+              onChanged: _search,
             ),
+          ),
+          const SizedBox(height: 8),
+          // Results
+          Expanded(
+            child: _filtered.isEmpty
+                ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.search_off,
+                          size: 40, color: AppTheme.textSecondaryLight.withAlpha(80)),
+                        const SizedBox(height: 12),
+                        Text('No songs found',
+                          style: TextStyle(color: AppTheme.textSecondaryLight)),
+                      ],
+                    ),
+                  )
+                : ListView.builder(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    itemCount: _filtered.length,
+                    itemBuilder: (context, index) {
+                      final song = _filtered[index];
+                      return Card(
+                        margin: const EdgeInsets.only(bottom: 6),
+                        child: ListTile(
+                          leading: CircleAvatar(
+                            backgroundColor: AppTheme.accent.withAlpha(25),
+                            child: Icon(Icons.music_note,
+                              color: AppTheme.accent, size: 18),
+                          ),
+                          title: Text(song['title']!,
+                            style: const TextStyle(
+                              fontSize: 14, fontWeight: FontWeight.w500)),
+                          subtitle: Text(song['artist']!,
+                            style: const TextStyle(fontSize: 12)),
+                          trailing: const Icon(Icons.play_circle_outline, size: 20),
+                          onTap: () => _showLyrics(context, song),
+                        ),
+                      );
+                    },
+                  ),
           ),
         ],
       ),
