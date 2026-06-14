@@ -354,36 +354,31 @@ class _LanguageDropdown extends StatelessWidget {
   }
 
   static Widget _simpleFlag(String code) {
-    // Build a recognizable colored flag representation
     switch (code) {
       case 'en':
         return Container(
           width: 22, height: 16,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(2),
-            color: Colors.white,
             border: Border.all(color: Colors.grey.shade300, width: 0.5),
           ),
           child: Stack(
             children: [
-              // Red Cross of St George
+              // Blue field
+              Container(color: const Color(0xFF012169)),
+              // Red cross (vertical) — St Patrick
               Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(width: 22, height: 3, color: const Color(0xFFCE1124)),
-                    const SizedBox(height: 7),
-                    Container(width: 22, height: 3, color: const Color(0xFFCE1124)),
-                  ],
-                ),
+                child: Container(width: 6, height: 16, color: Colors.white),
               ),
               Center(
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(width: 3, height: 16, color: const Color(0xFFCE1124)),
-                  ],
-                ),
+                child: Container(width: 3, height: 16, color: const Color(0xFFCE1124)),
+              ),
+              // Red cross (horizontal) — St George
+              Center(
+                child: Container(width: 22, height: 6, color: Colors.white),
+              ),
+              Center(
+                child: Container(width: 22, height: 3, color: const Color(0xFFCE1124)),
               ),
             ],
           ),
@@ -395,12 +390,48 @@ class _LanguageDropdown extends StatelessWidget {
             borderRadius: BorderRadius.circular(2),
             border: Border.all(color: Colors.grey.shade300, width: 0.5),
           ),
-          child: Column(
-            children: List.generate(7, (i) => Expanded(
-              child: Container(
-                color: i.isEven ? const Color(0xFFCC0000) : Colors.white,
+          child: Stack(
+            children: [
+              Column(
+                children: List.generate(14, (i) => Expanded(
+                  child: Container(
+                    color: i.isEven ? const Color(0xFFCC0000) : Colors.white,
+                  ),
+                )),
               ),
-            )),
+              // Blue canton
+              Positioned(
+                left: 0, top: 0,
+                child: Container(
+                  width: 10, height: 8,
+                  color: const Color(0xFF010066),
+                  child: Stack(
+                    children: [
+                      // Crescent (approximate with overlapping circles)
+                      Center(
+                        child: Container(
+                          width: 6, height: 4,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFFFCC00),
+                            borderRadius: BorderRadius.circular(3),
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        right: 1, top: 2,
+                        child: Container(
+                          width: 3, height: 3,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF010066),
+                            borderRadius: BorderRadius.circular(1.5),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
         );
       case 'zh':
@@ -410,8 +441,31 @@ class _LanguageDropdown extends StatelessWidget {
             borderRadius: BorderRadius.circular(2),
             color: const Color(0xFFDE2910),
           ),
-          child: const Center(
-            child: Icon(Icons.star, size: 10, color: Color(0xFFFFDE00)),
+          child: Stack(
+            children: [
+              // One large star
+              Positioned(
+                left: 3, top: 3,
+                child: Icon(Icons.star, size: 7, color: const Color(0xFFFFDE00)),
+              ),
+              // Four small stars
+              Positioned(
+                left: 8, top: 2,
+                child: Icon(Icons.star, size: 3, color: const Color(0xFFFFDE00)),
+              ),
+              Positioned(
+                left: 9, top: 5,
+                child: Icon(Icons.star, size: 3, color: const Color(0xFFFFDE00)),
+              ),
+              Positioned(
+                left: 9, top: 8,
+                child: Icon(Icons.star, size: 3, color: const Color(0xFFFFDE00)),
+              ),
+              Positioned(
+                left: 8, top: 11,
+                child: Icon(Icons.star, size: 3, color: const Color(0xFFFFDE00)),
+              ),
+            ],
           ),
         );
       default:
