@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart';
-import '../../services/bible_search.dart';
+import '../../services/bible_loader.dart';
 
 class DailyVerseScreen extends StatefulWidget {
   const DailyVerseScreen({super.key});
@@ -23,7 +23,7 @@ class _DailyVerseScreenState extends State<DailyVerseScreen>
   final _random = Random();
 
   // All verse references from the installed Bible
-  late List<BibleSearchResult> _allVerses;
+  late List<_VerseRef> _allVerses;
 
   static const _gradients = [
     [Color(0xFF1A1A2E), Color(0xFF16213E)],
@@ -44,13 +44,10 @@ class _DailyVerseScreenState extends State<DailyVerseScreen>
   void initState() {
     super.initState();
 
-    // Pull from the installed Bible — never hardcoded
-    _allVerses = BibleSearch.allVerses;
+    // Pull from the full installed Bible (30,715 verses)
+    _allVerses = _buildAllVerses();
     if (_allVerses.isEmpty) {
-      _allVerses = [BibleSearchResult(
-        book: '', chapter: 0, verse: 0,
-        text: 'No verses available yet.', matchType: '',
-      )];
+      _allVerses = [_VerseRef(text: 'No verses available yet.', reference: '')];
     }
 
     _spinController = AnimationController(
@@ -277,4 +274,38 @@ class _DailyVerseScreenState extends State<DailyVerseScreen>
       ),
     );
   }
+}
+
+class _VerseRef {
+  final String text;
+  final String reference;
+  final int index;
+  _VerseRef({required this.text, required this.reference, int? index})
+      : index = index ?? -1;
+}
+
+List<_VerseRef> _buildAllVerses() {
+  final verses = BibleLoader.allVerses;
+  if (verses.isEmpty) return [];
+  final bounds = BibleLoader.boundaries;
+  final result = <_VerseRef>[];
+  var globalIdx = 0;
+
+  for (var bi = 0; bi < bounds.length; bi++) {
+    final book = bounds[bi];
+    final bookName = BibleLoader.bookNames[bi];
+    for (var vi = 0; vi < book.verseCount; vi++) {
+      if (globalIdx >= verses.length) break;
+      final text = verses[globalIdx].trim();
+      if (text.isNotEmpty) {
+        result.add(_VerseRef(
+          index: globalIdx,
+          text: text,
+          reference: bookName,
+        ));
+      }
+      globalIdx++;
+    }
+  }
+  return result;
 }
