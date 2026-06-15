@@ -128,7 +128,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 24, 16, 32),
+        padding: EdgeInsets.fromLTRB(16, 24, 16, MediaQuery.of(context).padding.bottom + 80),
         children: [
           Center(
             child: Column(

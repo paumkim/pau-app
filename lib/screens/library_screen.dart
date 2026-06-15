@@ -9,6 +9,7 @@ import '../services/plugin_registry.dart';
 import '../services/plugin_screens.dart';
 import '../services/lyrics_loader.dart';
 import '../widgets/error_widgets.dart';
+import '../widgets/design_system.dart';
 import 'vocab_screen.dart';
 import 'phrasebook_screen.dart';
 import 'plugins/bible_reader_screen.dart';
@@ -45,7 +46,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
     return Scaffold(
       body: _loading
           ? const AppLoadingShimmer(itemCount: 4)
-          : ListView(padding: const EdgeInsets.fromLTRB(16, 24, 16, 32), children: [
+          : ListView(padding: screenPadding(context), children: [
               Center(child: Column(children: [
                 Container(padding: const EdgeInsets.all(14), decoration: BoxDecoration(color: AppTheme.primary.withAlpha(12), shape: BoxShape.circle),
                   child: const Icon(Icons.menu_book, size: 28, color: AppTheme.primary)),
@@ -57,7 +58,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
 
               // My Books — imported EPUBs + bundled books
               if (books.isNotEmpty) ...[
-                _sectionHeader('My Books', Icons.menu_book),
+                sectionHeader('My Books', Icons.menu_book),
                 const SizedBox(height: 8),
                 ...books.map((book) => Card(margin: const EdgeInsets.only(bottom: 6), child: ListTile(
                   leading: CircleAvatar(radius: 18, backgroundColor: AppTheme.primary.withAlpha(20),
@@ -72,7 +73,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
 
               // Import button (always visible)
               if (books.isEmpty)
-                _sectionHeader('My Books', Icons.menu_book),
+                sectionHeader('My Books', Icons.menu_book),
               Card(child: ListTile(
                 leading: CircleAvatar(backgroundColor: AppTheme.primary.withAlpha(20),
                   child: const Icon(Icons.file_open, color: AppTheme.primary, size: 20)),
@@ -86,7 +87,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
               const SizedBox(height: 20),
 
               // Bibles
-              _sectionHeader('Bibles', Icons.auto_stories),
+              sectionHeader('Bibles', Icons.auto_stories),
               const SizedBox(height: 8),
               ...bibles.map((b) => Card(child: ListTile(
                 leading: CircleAvatar(radius: 18, backgroundColor: AppTheme.primary.withAlpha(20),
@@ -100,7 +101,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
 
               // Songs
               if (hasLyrics) ...[
-                _sectionHeader('Songs', Icons.music_note),
+                sectionHeader('Songs', Icons.music_note),
                 const SizedBox(height: 8),
                 Card(child: ListTile(
                   leading: CircleAvatar(radius: 18, backgroundColor: AppTheme.accent.withAlpha(25),
@@ -114,7 +115,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
               ],
 
               // Learning
-              _sectionHeader('Learning', Icons.auto_stories),
+              sectionHeader('Learning', Icons.auto_stories),
               const SizedBox(height: 8),
               Card(child: ListTile(
                 leading: CircleAvatar(backgroundColor: AppTheme.accent.withAlpha(20),
@@ -136,7 +137,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
               // Other plugins
               if (plugins.isNotEmpty) ...[
                 const SizedBox(height: 20),
-                _sectionHeader('Plugins', Icons.extension),
+                sectionHeader('Plugins', Icons.extension),
                 const SizedBox(height: 8),
                 ...plugins.map((p) => Card(margin: const EdgeInsets.only(bottom: 6), child: ListTile(
                   leading: CircleAvatar(radius: 18, backgroundColor: p.color.withAlpha(25),
@@ -153,14 +154,6 @@ class _LibraryScreenState extends State<LibraryScreen> {
               ],
             ]),
     );
-  }
-
-  Widget _sectionHeader(String title, IconData icon) {
-    return Row(children: [
-      Icon(icon, size: 16, color: AppTheme.primary),
-      const SizedBox(width: 6),
-      Text(title, style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13, color: AppTheme.primary)),
-    ]);
   }
 
   void _openPlugin(BuildContext context, String id) {
