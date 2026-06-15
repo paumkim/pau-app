@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import '../services/translation_service.dart';
 import '../services/hive_storage.dart';
 import '../services/storage_service.dart';
-import '../services/connectivity_service.dart';
 import '../models/translation.dart';
 import '../config/globals.dart';
 import '../widgets/error_widgets.dart';

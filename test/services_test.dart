@@ -82,8 +82,8 @@ void main() {
     });
 
     test('generates unique IDs', () {
-      final t1 = Translation(sourceText: 'a', translatedText: 'b');
-      final t2 = Translation(sourceText: 'a', translatedText: 'b');
+      final t1 = Translation(sourceText: 'a', translatedText: 'b', sourceLanguage: 'en', targetLanguage: 'zomi');
+      final t2 = Translation(sourceText: 'a', translatedText: 'b', sourceLanguage: 'en', targetLanguage: 'zomi');
       expect(t1.id, isNot(t2.id));
     });
   });
@@ -117,7 +117,7 @@ void main() {
     });
 
     test('toggleFavorite works', () async {
-      final t = Translation(sourceText: 'a', translatedText: 'b');
+      final t = Translation(sourceText: 'a', translatedText: 'b', sourceLanguage: 'en', targetLanguage: 'zomi');
       await storage.saveTranslation(t);
 
       await storage.toggleFavorite(t.id);
@@ -130,8 +130,8 @@ void main() {
     });
 
     test('getFavorites returns only favorites', () async {
-      final t1 = Translation(sourceText: 'a', translatedText: 'b');
-      final t2 = Translation(sourceText: 'c', translatedText: 'd');
+      final t1 = Translation(sourceText: 'a', translatedText: 'b', sourceLanguage: 'en', targetLanguage: 'zomi');
+      final t2 = Translation(sourceText: 'c', translatedText: 'd', sourceLanguage: 'en', targetLanguage: 'zomi');
       t2.isFavorite = true;
 
       await storage.saveTranslation(t1);
@@ -143,7 +143,7 @@ void main() {
     });
 
     test('clearHistory removes all', () async {
-      await storage.saveTranslation(Translation(sourceText: 'a', translatedText: 'b'));
+      await storage.saveTranslation(Translation(sourceText: 'a', translatedText: 'b', sourceLanguage: 'en', targetLanguage: 'zomi'));
       await storage.clearHistory();
       final history = await storage.getHistory();
       expect(history, isEmpty);

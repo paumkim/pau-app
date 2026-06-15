@@ -70,7 +70,6 @@ class AppLoadingShimmer extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final base = isDark ? Colors.white.withAlpha(10) : Colors.grey.shade200;
-    final highlight = isDark ? Colors.white.withAlpha(20) : Colors.grey.shade100;
 
     return Column(
       children: List.generate(itemCount, (i) => Padding(

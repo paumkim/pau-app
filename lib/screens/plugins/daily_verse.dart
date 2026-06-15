@@ -1,6 +1,5 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import '../../theme/app_theme.dart';
 import '../../services/bible_loader.dart';
 
 class DailyVerseScreen extends StatefulWidget {

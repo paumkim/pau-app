@@ -2,8 +2,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import '../theme/app_theme.dart';
-import '../models/book_content.dart';
-import '../models/plugin.dart';
 import '../services/book_registry.dart';
 import '../services/epub_parser.dart';
 import '../services/plugin_registry.dart';

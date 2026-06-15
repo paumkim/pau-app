@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:convert';
-import 'dart:isolate';
 import 'package:flutter/foundation.dart';
 import 'package:archive/archive.dart';
 import '../models/book_content.dart';

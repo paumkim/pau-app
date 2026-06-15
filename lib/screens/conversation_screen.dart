@@ -5,7 +5,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../theme/app_theme.dart';
 import '../services/chat_service.dart';
 import '../services/hive_storage.dart';
-import '../services/connectivity_service.dart';
 import '../config/globals.dart';
 import '../widgets/error_widgets.dart';
 import '../widgets/keyboard_dismiss.dart';
