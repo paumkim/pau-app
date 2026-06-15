@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart';
 import '../../services/bible_loader.dart';
+import '../../services/hive_storage.dart';
 
 class BibleReaderScreen extends StatefulWidget {
   const BibleReaderScreen({super.key});
@@ -87,11 +88,33 @@ class _BibleReaderScreenState extends State<BibleReaderScreen> {
   }
 
   Future<void> _loadProgress() async {
-    // Placeholder — progress will use Hive when refactored
+    final saved = await HiveStorage.getProgress('bible_reader_state');
+    if (saved != null && mounted) {
+      final code = saved['code'] as String? ?? _translations.first.code;
+      final book = saved['book'] as int? ?? 0;
+      final ch = saved['chapter'] as int? ?? 1;
+      if (code.isNotEmpty) {
+        final idx = _translations.indexWhere((t) => t.code == code);
+        if (idx >= 0) {
+          _translationIndex = idx;
+          final maxBook = _translations[idx].bookNames.length;
+          if (book >= 0 && book < maxBook) {
+            _currentBook = book;
+            final maxCh = _chapterCountFor(book);
+            _currentChapter = ch.clamp(1, maxCh);
+            _scrollController.jumpTo(0);
+          }
+        }
+      }
+    }
   }
 
   Future<void> _saveProgress() async {
-    // Placeholder
+    final t = _active;
+    if (t == null) return;
+    await HiveStorage.saveProgress('bible_reader_state', _currentBook, _currentChapter, extras: {
+      'code': t.code,
+    });
   }
 
   void _showPicker(BuildContext context) {

@@ -101,9 +101,15 @@ class HiveStorage {
   }
 
   // Reading progress
-  static Future<void> saveProgress(String bookId, int section, int chapter) async {
+  static Future<void> saveProgress(String bookId, int section, int chapter, {Map<String, dynamic>? extras}) async {
     if (!_initialized) return;
-    await _progress.put(bookId, {'section': section, 'chapter': chapter, 'updatedAt': DateTime.now().toIso8601String()});
+    final data = <String, dynamic>{
+      'section': section,
+      'chapter': chapter,
+      'updatedAt': DateTime.now().toIso8601String(),
+    };
+    if (extras != null) data.addAll(extras);
+    await _progress.put(bookId, data);
   }
 
   static Future<Map<String, dynamic>?> getProgress(String bookId) async {
