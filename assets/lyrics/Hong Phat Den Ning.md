@@ -1,0 +1,23 @@
+Khaipi
+Key: G
+Khaipi ===
+
+[Verse 1]
+Ka mawhna khempeuh te, nong maisak hi
+Ka natna khempeuh zong, nong damsak hi
+Siat theina khempeuh pan, nong gumkhia hi
+Itna leh hehpihna tawh, kei nong tuam hi
+
+[Pre-chorus]
+Ka lungsim teng, sungkhia in
+Nang kong bia hi
+Ka lungsim teng, sungkhia in
+Kong phat
+
+[Chorus]
+Ama min siangtho phat ning, a tawntung in
+Ama hehpihna phat ning, a tawntung in
+Ama min siangtho phat ning, a tawntung in
+Ama hehpihna phat ning, a tawntung in
+Hong phat den ning, hong phat den ning
+Hong phat den ning, hong phat den ning

@@ -1,0 +1,34 @@
+Zomi Online Lyrics
+Key: G
+Zomi Online Lyrics
+PHATNA
+Phuak - CK Khai
+Sa - MungPi (Idol) & ZCF- Cannan (Youth)
+
+[Verse1]
+Pil leh siamman hong phat thei hi keng
+A phattak Pasian Na hi zaw
+Kong phatna te hoih in Nong san na
+Kei hoihna leh siamna om kei
+
+[Pre-chorus]
+Khut leh khe te tawh namin kong phat theih
+Nang tung Topa lungdam ing
+Khitui khua ul tawh Na min kong phat theih
+Nang tung Topa lungdam ing
+Kisik omlo supna omlo
+Nasep in Topa phatna hi
+Chours
+Nang kong phat ciangin kavan gik teng zang
+Ka lungkhaman teng bei khin
+Ka haksatna te tui suak e
+Gim leh tawlna te zong phawk man lo in
+Ka natna teng ah damna
+Ka lung nopna'n Nang mah phatna sung hi
+0
+Post a Comment
+Home
+Menu
+Total Pageviews
+Powered by Blogger.
+Labels

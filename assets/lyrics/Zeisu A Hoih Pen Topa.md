@@ -1,0 +1,27 @@
+Khaipi
+Key: G
+Khaipi ===
+
+[Verse 1]
+Zeisu, a hoihpen Topa
+Zeisu, lamdang thulak Pa
+Min khempeuh sang in
+Min lianzaw kong pia uh hi
+Ko tawh hong om khawm
+Lamdang hi
+
+[Pre-chorus]
+Phat ding na kilawm hi
+Pahtawi ding in
+Khut siangthote lamto sa in
+Na min siangtho hong phat ung
+
+[Chorus]
+Nang na lian hi
+Na bawl nate lamdang hi
+Nang bang om lo hi Topa
+Nang bang om lo hi Topa
+Nang na lian hi
+Na bawl nate lamdang hi
+Nang bang om lo hi Topa
+Nang bang om lo hi Topa

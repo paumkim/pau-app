@@ -1,0 +1,27 @@
+Khual Pi
+Key: G
+Khual Pi ===
+
+[Verse 1]
+Ka khitui hong nulsak
+Zaitha thak hong guan in, Nong ompih hi
+Ka puk ciang hong phong in
+Ka gual-lelhna lampi
+Gualzawhna hong suaksak
+
+[Pre-chorus]
+Na min in siangtho hi a tawntung
+Na min in siangtho hi a tawntung
+
+[Chorus]
+Nang kong sap ciang
+Na awnem tawh nong dawng hi
+Nang kong zuat ciang
+Na anglum sungah nong khawlsak
+Topa na hoih hi, Nang kong bia ding hi
+Na vangliatna’n
+Ka natna teng hong damsak hi
+Nong ompihna’n
+Ka mailam ni bang tangsak hi
+Topa na hoih hi, Nang kong bia ding hi
+Zeisu

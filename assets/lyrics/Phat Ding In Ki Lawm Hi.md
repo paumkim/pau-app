@@ -1,0 +1,27 @@
+Khual Pi
+Key: G
+Khual Pi ===
+
+[Verse 1]
+Hong gumkhia hi, suahtakna hong pia
+Leivui pan hong lamto
+Zeisu lian hi, Zeisu mang hi
+Sihna in len zo lo
+
+[Pre-chorus]
+A tawntung, phat ding in
+A tawntung, ki lawm hi
+
+[Chorus]
+Zeisu lianbel
+Phat ding in ki lawm hi
+A min phat ning
+A tawntung phat den ning
+Hallelu halleluijah
+
+[Bridge]
+Gualzawhna, nopsakna
+Vangliatna hong pia
+Hell gam pan, hong gum in
+Nuntakna hong pia
+Hallelu Hallelujah

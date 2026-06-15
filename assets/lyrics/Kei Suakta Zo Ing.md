@@ -1,0 +1,24 @@
+Galilee AG Church
+Key: G
+Galilee AG Church ===
+
+[Verse 1]
+Satan hong hencip hang
+Zeisu’n hong khah khia zo
+Ka guallelhna khempeuh
+Hong zawh sak khin zo
+Gualzawhna la in sa ning
+Gualzawhna dialte khai in
+Lam in diang in Topa phat ni
+
+[Pre-chorus]
+Satan hong hen na khau khempeuh
+Tuni’n Topa zeisu in
+Singkhuam tungah hong phel khia zo hi
+
+[Chorus]
+Kei suakta zo ing, mawhna kol sung pan
+Hong gumkhia zo hi, To Zeisu in
+Kei suakta zo ing, mawhna kol sung pan
+Hong gumkhia zo hi, To Zeisu in
+Kei suakta zo ing

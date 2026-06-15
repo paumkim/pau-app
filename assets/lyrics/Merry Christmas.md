@@ -1,0 +1,17 @@
+[Verse 1]
+Key: G
+
+[Verse 1]
+Tu zaan in hong suak naungek
+Zeisu hang, nopsakna leh
+Lungmuanna hong tung den ta hen
+Gualzawhna leh lungnnopna
+Hong pia ding, na mai lam ah
+Hong suak khin zo hi
+
+[Chorus]
+Zeisu suah lungdamna
+Zeisu suah lungdamna
+Zeisu hong suak lungdamnna
+Thupha hong tung ta hen
+Thupha hong tung ta hen

@@ -1,0 +1,34 @@
+Khual Pi
+Key: G
+Khual Pi ===
+
+[Verse 1]
+Ka tuah khak thu khempeuh hong theih pih
+Nang bek na om hi Topa
+Ka min tawh nong thei hi
+Ka thanem in ka kah aw hong za
+Nang bek na om hi Topa
+Itna tawh nong kem hi
+
+[Pre-chorus]
+Khutte lamto in, aw te sangkhan in
+Nang kong bia hi
+
+[Chorus 1]
+Nang na lian hi, Nang na hoih hi
+Ka ngaihsut teng kong ap hi
+Ka lungsim tawh kong bia hi
+Nang na lian hi, Nang na hoih hi
+Ka ngaihsut teng kong ap hi
+Ka lungsim tawh kong bia hi
+Nang na lian hi
+
+[Chorus 2]
+Nang na lian hi, Nang na hoih hi
+Ka ngaihsut teng kong ap hi
+Ka lungsim tawh kong bia hi
+Nang na lian hi, Nang na hoih hi
+Ka ngaihsut teng kong ap hi
+Ka lungsim tawh kong bia hi
+Nang na lian hi
+Nang na hoih hi, Topa
