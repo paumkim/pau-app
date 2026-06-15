@@ -129,41 +129,61 @@ class _LyricsScreenState extends State<LyricsScreen> {
     );
   }
 
-  Widget _buildLyricsWithChords(LyricSong song) {
-    final lines = song.lyrics.split('\n');
-    final hasChords = song.chords.length == lines.length;
+  Widget _buildSections(LyricSong song) {
+    if (song.sections.isEmpty) return const SizedBox.shrink();
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: List.generate(lines.length, (i) {
-        final chordLine = hasChords && i < song.chords.length ? song.chords[i] : '';
-        final lyricLine = lines[i];
+      children: song.sections.expand((section) {
+        final items = <Widget>[];
 
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 4),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (chordLine.isNotEmpty)
-                Text(chordLine,
+        // Section label
+        if (section.label.isNotEmpty) {
+          items.add(Padding(
+            padding: const EdgeInsets.only(top: 16, bottom: 8),
+            child: Text(section.label,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w700,
+                color: AppTheme.accent,
+                letterSpacing: 1,
+              )),
+          ));
+        }
+
+        // Lines with chords
+        for (var i = 0; i < section.lines.length; i++) {
+          final chordLine = i < section.chords.length ? section.chords[i] : '';
+          final lyricLine = section.lines[i];
+
+          items.add(Padding(
+            padding: const EdgeInsets.only(bottom: 4),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (chordLine.isNotEmpty)
+                  Text(chordLine,
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      color: AppTheme.accent,
+                      fontFamily: 'monospace',
+                      height: 1.2,
+                    )),
+                Text(lyricLine,
                   style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
-                    color: AppTheme.accent,
-                    fontFamily: 'monospace',
-                    height: 1.2,
+                    fontSize: 16,
+                    height: 1.6,
+                    color: isDark ? Colors.white : Colors.black87,
                   )),
-              Text(lyricLine,
-                style: TextStyle(
-                  fontSize: 16,
-                  height: 1.6,
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? Colors.white : Colors.black87,
-                )),
-            ],
-          ),
-        );
-      }),
+              ],
+            ),
+          ));
+        }
+
+        return items;
+      }).toList(),
     );
   }
 
@@ -172,66 +192,82 @@ class _LyricsScreenState extends State<LyricsScreen> {
       builder: (_) => Scaffold(
         body: Column(
           children: [
-              Container(
-                padding: const EdgeInsets.fromLTRB(16, 48, 16, 12),
-                decoration: BoxDecoration(
-                  color: AppTheme.accent.withAlpha(10),
-                  border: Border(
-                    bottom: BorderSide(color: Colors.grey.shade200)),
-                ),
-                child: Row(
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.arrow_back),
-                      onPressed: () => Navigator.pop(context)),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(song.title,
-                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.w600)),
-                          Text(song.artist,
-                            style: TextStyle(
-                              fontSize: 13, color: AppTheme.textSecondaryLight)),
-                        ],
-                      ),
-                    ),
-                    if (song.key != null)
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: AppTheme.accent.withAlpha(25),
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: AppTheme.accent.withAlpha(60)),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(Icons.music_note, size: 12, color: AppTheme.accent),
-                            const SizedBox(width: 4),
-                            Text('Key: ${song.key}',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                                color: AppTheme.accent,
-                              )),
-                          ],
-                        ),
-                      ),
-                  ],
-                ),
+            Container(
+              padding: const EdgeInsets.fromLTRB(16, 48, 16, 12),
+              decoration: BoxDecoration(
+                color: AppTheme.accent.withAlpha(10),
+                border: Border(
+                  bottom: BorderSide(color: Colors.grey.shade200)),
               ),
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.arrow_back),
+                    onPressed: () => Navigator.pop(context)),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(song.title,
+                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w600)),
+                        Text(song.artist,
+                          style: TextStyle(
+                            fontSize: 13, color: AppTheme.textSecondaryLight)),
+                      ],
+                    ),
+                  ),
+                  // Metadata badges
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (song.key != null)
+                        _badge(Icons.music_note, 'Key: ${song.key}'),
+                      if (song.bpm != null)
+                        _badge(Icons.speed, '${song.bpm} BPM'),
+                      if (song.timeSig != null)
+                        _badge(Icons.timer, song.timeSig!),
+                    ],
+                  ),
+                ],
+              ),
+            ),
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(20),
-                child: _buildLyricsWithChords(song),
+                child: _buildSections(song),
               ),
             ),
           ],
         ),
       ),
     ));
+  }
+
+  Widget _badge(IconData icon, String text) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 4),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+        decoration: BoxDecoration(
+          color: AppTheme.accent.withAlpha(20),
+          borderRadius: BorderRadius.circular(6),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 10, color: AppTheme.accent),
+            const SizedBox(width: 3),
+            Text(text,
+              style: TextStyle(
+                fontSize: 9,
+                fontWeight: FontWeight.w600,
+                color: AppTheme.accent,
+              )),
+          ],
+        ),
+      ),
+    );
   }
 }
