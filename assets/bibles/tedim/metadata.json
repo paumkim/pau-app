@@ -1,0 +1,10 @@
+{
+  "name": "Tedim Bible",
+  "language": "Zomi (Tedim)",
+  "code": "tedim",
+  "direction": "ltr",
+  "totalVerses": 30715,
+  "bookNames": ["Piancilna","Paikhiatna","Siampi Laibu","Gamlak Vakna","Thu Hilhkikna","Joshua","Thukhente","Ruth","1 Samuel","2 Samuel","1 Siangte","2 Siangte","1 Chronicles","2 Chronicles","Ezra","Nehemiah","Esther","Job","Late","Paukhakna","Vaipuak","Late Sia","Isaiah","Jeremiah","Lamentations","Ezekiel","Daniel","Hosea","Joel","Amos","Obadiah","Jonah","Micah","Nahum","Habakkuk","Zephaniah","Haggai","Zechariah","Malachi","Matthew","Mark","Luke","John","Thukhente","Rome","1 Corinthians","2 Corinthians","Galatia","Ephesus","Philippi","Colossae","1 Thessalonica","2 Thessalonica","1 Timothy","2 Timothy","Titus","Philemon","Hebrew","James","1 Peter","2 Peter","1 John","2 John","3 John","Jude","Mangmuhna"],
+  "enNames": ["Genesis","Exodus","Leviticus","Numbers","Deuteronomy","Joshua","Judges","Ruth","1 Samuel","2 Samuel","1 Kings","2 Kings","1 Chronicles","2 Chronicles","Ezra","Nehemiah","Esther","Job","Psalms","Proverbs","Ecclesiastes","Song of Solomon","Isaiah","Jeremiah","Lamentations","Ezekiel","Daniel","Hosea","Joel","Amos","Obadiah","Jonah","Micah","Nahum","Habakkuk","Zephaniah","Haggai","Zechariah","Malachi","Matthew","Mark","Luke","John","Acts","Romans","1 Corinthians","2 Corinthians","Galatians","Ephesians","Philippians","Colossians","1 Thessalonians","2 Thessalonians","1 Timothy","2 Timothy","Titus","Philemon","Hebrews","James","1 Peter","2 Peter","1 John","2 John","3 John","Jude","Revelation"],
+  "verseCounts": [1533,1213,859,1288,959,658,618,85,811,695,817,719,942,822,280,406,167,1070,2461,915,222,117,1292,1364,154,1273,357,197,73,146,21,48,105,47,56,53,38,211,55,1068,675,1151,879,1007,433,437,257,149,155,104,95,89,47,113,83,46,25,303,108,105,61,105,13,15,25,405]
+}

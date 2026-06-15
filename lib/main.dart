@@ -49,18 +49,18 @@ Future<void> main() async {
     debugPrint('Failed to load plugins: $e');
   }
 
+  // Load all Bible translations from assets/bibles/
+  try {
+    await BibleLoader.loadAll();
+  } catch (e) {
+    debugPrint('Bible load failed: $e');
+  }
+
   // Load lyrics from .md files
   try {
     await LyricsLoader.loadAll();
   } catch (e) {
     debugPrint('Lyrics load failed: $e');
-  }
-
-  // Load the full Tedim Bible (30,715 verses)
-  try {
-    await BibleLoader.load();
-  } catch (e) {
-    debugPrint('Bible load failed: $e');
   }
 
   // Initialize Hive for structured local storage

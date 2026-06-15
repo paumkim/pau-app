@@ -44,4 +44,6 @@ flutter:
     - assets/books/
     - assets/plugins/
     - assets/bible/
+    - assets/bibles/tedim/
+    - assets/bibles/kjv/
     - assets/lyrics/

@@ -106,11 +106,13 @@ class _DailyVerseScreenState extends State<DailyVerseScreen>
   }
 
   void _rebuildDeck() {
-    final allV = BibleLoader.allVerses;
+    final t = BibleLoader.translations.isNotEmpty ? BibleLoader.translations.first : null;
+    if (t == null) return;
+    final allV = t.verses;
     if (allV.isEmpty) return;
 
     _allVerses.clear();
-    final bounds = BibleLoader.boundaries;
+    final bounds = t.boundaries;
 
     const cc = [
       50, 40, 27, 36, 34, 24, 21, 4, 31, 24,
@@ -135,7 +137,7 @@ class _DailyVerseScreenState extends State<DailyVerseScreen>
           final vr = (vOff % avgV) + 1;
           _allVerses.add(_VerseRef(
             index: idx, text: text,
-            reference: '${BibleLoader.bookNames[bi]} $ch:$vr',
+            reference: '${t.bookNames[bi]} $ch:$vr',
           ));
         }
       }
