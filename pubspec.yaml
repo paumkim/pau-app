@@ -46,4 +46,6 @@ flutter:
     - assets/bible/
     - assets/bibles/tedim/
     - assets/bibles/kjv/
+    - assets/bibles/my_judson/
+    - assets/bibles/ms_alkitab/
     - assets/lyrics/
